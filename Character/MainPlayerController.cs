@@ -8,7 +8,7 @@ using UnityEngine.InputSystem;
 
 public class MainPlayerController : MonoBehaviour
 {
-    [SerializeField] private Transform _gunTransform;
+    [SerializeField] private Transform _turgetTransform;
     private CharacterActions _inputActions;
     [SerializeField] private CharacterController _characterController;
     [SerializeField, Range(0f, 30f)] private float _speed;
@@ -61,9 +61,10 @@ public class MainPlayerController : MonoBehaviour
     private void Rotation()
     {
         Vector2 input = _inputActions.Default.Rotate.ReadValue<Vector2>() * Time.deltaTime * _sensetive;
-        transform.Rotate(Vector3.up, input.x);
-        _gunTransform.Rotate(Vector3.right, -input.y);
-        Debug.Log(_gunTransform.rotation);
+        _turgetTransform.position = new Vector3(_turgetTransform.position.x + input.x, _turgetTransform.position.y, _turgetTransform.position.z);
+        _turgetTransform.position = new Vector3(_turgetTransform.position.x, _turgetTransform.position.y + input.y, _turgetTransform.position.z);
+
+
     }
     private void Update()
     {
