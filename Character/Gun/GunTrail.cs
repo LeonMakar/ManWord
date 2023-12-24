@@ -5,7 +5,7 @@ public class GunTrail : MonoBehaviour, IService
 {
     [SerializeField] TrailRenderer _trail;
     private Vector3 _shootPoint;
-    public void SetShootPoint(Vector3 ShootDirection) => _shootPoint = ShootDirection;
+    public void SetShootPoint(Vector3 ShootPoint) => _shootPoint = ShootPoint;
 
     public IEnumerator FrowTrail()
     {

@@ -7,7 +7,7 @@ using Zenject;
 public class Gun : MonoBehaviour, IService, IInjectable
 {
     [SerializeField] private Transform _rawSpawnPoint;
-    [SerializeField] private Transform _rawSpawDirection;
+    [SerializeField] private Transform _rawEndPoint;
     [SerializeField] private Transform _bulletAimPoint;
     [SerializeField] private Transform _headPoint;
     [SerializeField] private Transform _bulletSpawnPoint;
@@ -51,7 +51,11 @@ public class Gun : MonoBehaviour, IService, IInjectable
         StartCoroutine(Shooting(_rateOfFire));
     }
 
-    public void UpgradeRateOFFire()
+    private void Update()
+    {
+        FindTargetForAimPoint();
+    }
+    public void UpgradeRateOfFire()
     {
         StopCoroutine(Shooting(_rateOfFire));
         StartCoroutine(Shooting(_rateOfFire));
@@ -59,36 +63,53 @@ public class Gun : MonoBehaviour, IService, IInjectable
     public void Shoot()
     {
         _mainPlayerController.AnimateShoot();
-        var shootParticle = Instantiate(_shootParticle, _bulletSpawnPoint);
-        StartCoroutine(DeleteShootParticles(shootParticle, shootParticle.main.duration));
-        var bulletParticle = Instantiate(_bulletParticle, _bulletParticle.transform.position, _bulletParticle.transform.rotation);
-        StartCoroutine(DeleteShootParticles(bulletParticle, bulletParticle.main.duration));
+        InstantiateParticlesAfterShoot();
         _gunTrail.SetShootPoint(GetSprededPoint(_bulletAimPoint.position));
+        PlayShootAudio();
+        Ray ray = CreateRay();
+        if (Physics.Raycast(ray, out RaycastHit hit, Int32.MaxValue, _hitableLayer))
+        {
+            hit.transform.TryGetComponent(out IShootable shootableObject);
+            shootableObject?.Attacked(_gunDamage);
+            InstantiateHitParticles(hit);
+        }
+    }
+
+    private void InstantiateHitParticles(RaycastHit hit)
+    {
+        var impactParticle = Instantiate(_impactParticle, hit.transform.position, Quaternion.identity);
+        StartCoroutine(DeleteShootParticles(impactParticle, impactParticle.main.duration));
+    }
+
+    private Ray CreateRay()
+    {
+        var direction = GetSprededPoint(_rawEndPoint.position) - _rawSpawnPoint.position;
+        Ray ray = new Ray(_rawSpawnPoint.position, direction);
+        Debug.DrawRay(_rawSpawnPoint.position, direction * 150, Color.red, 2);
+        return ray;
+    }
+
+    private void PlayShootAudio()
+    {
         if (Time.timeScale == 1)
             _audioSource.pitch = UnityEngine.Random.Range(0.7f, 1);
         else
             _audioSource.pitch = UnityEngine.Random.Range(0.2f, 0.4f);
         _audioSource.Play();
-        var direction = _rawSpawDirection.position - _rawSpawnPoint.position;
-        Ray ray = new Ray(_rawSpawnPoint.position, direction);
-        Debug.DrawRay(_rawSpawnPoint.position, direction * 150, Color.red, 2);
-        if (Physics.Raycast(ray, out RaycastHit hit, Int32.MaxValue, _hitableLayer))
-        {
-            hit.transform.TryGetComponent<ShootPoint>(out ShootPoint shootPoint);
-            shootPoint?.Attacked(_gunDamage);
-            var impactParticle = Instantiate(_impactParticle, hit.transform.position, Quaternion.identity);
-            StartCoroutine(DeleteShootParticles(impactParticle, impactParticle.main.duration));
-        }
+    }
+
+    private void InstantiateParticlesAfterShoot()
+    {
+        var shootParticle = Instantiate(_shootParticle, _bulletSpawnPoint);
+        StartCoroutine(DeleteShootParticles(shootParticle, shootParticle.main.duration));
+        var bulletParticle = Instantiate(_bulletParticle, _bulletParticle.transform.position, _bulletParticle.transform.rotation);
+        StartCoroutine(DeleteShootParticles(bulletParticle, bulletParticle.main.duration));
     }
 
     private IEnumerator DeleteShootParticles(ParticleSystem particle, float waitDuration)
     {
         yield return new WaitForSeconds(waitDuration);
         Destroy(particle.gameObject);
-    }
-    private void Update()
-    {
-        FindTargetForAimPoint();
     }
     public void PlayerMooves() => _isMooving = true;
     public void PlayerStopMooves() => _isMooving = false;
@@ -104,16 +125,22 @@ public class Gun : MonoBehaviour, IService, IInjectable
             else
                 _bulletAimPoint.GetComponentInChildren<Renderer>().material.color = Color.green;
 
-            float distance = Vector3.Distance(_rawSpawnPoint.position, hit.point);
-            float scale = Mathf.Lerp(1, 4, distance / _maxDistance);
-            _bulletAimPoint.localScale = new Vector3(scale, scale, scale); ;
-            _bulletAimPoint.position = hit.point;
+            ResizeAimPoint(hit);
 
-            hit.transform.TryGetComponent<ShootPoint>(out ShootPoint shootPoint);
+            hit.transform.TryGetComponent<ZombieShootPoint>(out ZombieShootPoint shootPoint);
             shootPoint?.InvokeOnUnderAimAction();
         }
 
     }
+
+    private void ResizeAimPoint(RaycastHit hit)
+    {
+        float distance = Vector3.Distance(_rawSpawnPoint.position, hit.point);
+        float scale = Mathf.Lerp(1, 4, distance / _maxDistance);
+        _bulletAimPoint.localScale = new Vector3(scale, scale, scale); ;
+        _bulletAimPoint.position = hit.point;
+    }
+
     private IEnumerator Shooting(float rateOfFire)
     {
         while (true)
