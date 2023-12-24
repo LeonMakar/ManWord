@@ -1,76 +1,130 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
-using UnityEngineInternal;
 using YG.Example;
+using Zenject;
 
-public class Gun : MonoBehaviour
+public class Gun : MonoBehaviour, IService, IInjectable
 {
-    [SerializeField] private Transform _bulletSpawnPoint;
+    [SerializeField] private Transform _rawSpawnPoint;
+    [SerializeField] private Transform _rawSpawDirection;
     [SerializeField] private Transform _bulletAimPoint;
+    [SerializeField] private Transform _headPoint;
+    [SerializeField] private Transform _bulletSpawnPoint;
+
+
     [Space(15)]
     [SerializeField] private ParticleSystem _impactParticle;
     [SerializeField] private ParticleSystem _shootParticle;
-    [Space(15)]
+    [SerializeField] private ParticleSystem _bulletParticle;
 
-    [SerializeField] private GameObject _bulletTrail;
+    [Space(15)]
     [SerializeField] private float _shootDelay = 1.0f;
     [SerializeField] private Vector3 _gunSpred;
     [Space(15)]
 
     [SerializeField] private LayerMask _hitableLayer;
-    private bool _isReloading = false;
     [SerializeField] private float _rateOfFire;
-    private int _gunCount = 0;
-    [SerializeField] TrailRenderer _trail;
+    [SerializeField] private int _gunDamage = 10;
+    [Space(15)]
+
+    [SerializeField] private AudioSource _audioSource;
 
     private int _maxDistance = 60;
+    private bool _isReloading = false;
+    private bool _isMooving = false;
+    private MainPlayerController _mainPlayerController;
+    private GunTrail _gunTrail;
+    private EventBus _eventBus;
+
+    [Inject]
+    private void Construct(MainPlayerController mainPlayerController, GunTrail gunTrail, EventBus eventBus)
+    {
+        _mainPlayerController = mainPlayerController;
+        _gunTrail = gunTrail;
+        _eventBus = eventBus;
+
+    }
 
     private void Awake()
     {
         StartCoroutine(Shooting(_rateOfFire));
     }
+
+    public void UpgradeRateOFFire()
+    {
+        StopCoroutine(Shooting(_rateOfFire));
+        StartCoroutine(Shooting(_rateOfFire));
+    }
     public void Shoot()
     {
-
-        StartCoroutine(SpawnShoot(GetSprededPoint(_bulletAimPoint.position)));
-        Ray ray = new Ray(_bulletSpawnPoint.position, transform.TransformDirection(Vector3.forward));
-        Debug.DrawRay(_bulletSpawnPoint.position, transform.TransformDirection(Vector3.forward) * 150, Color.red, 2);
+        _mainPlayerController.AnimateShoot();
+        var shootParticle = Instantiate(_shootParticle, _bulletSpawnPoint);
+        StartCoroutine(DeleteShootParticles(shootParticle, shootParticle.main.duration));
+        var bulletParticle = Instantiate(_bulletParticle, _bulletParticle.transform.position, _bulletParticle.transform.rotation);
+        StartCoroutine(DeleteShootParticles(bulletParticle, bulletParticle.main.duration));
+        _gunTrail.SetShootPoint(GetSprededPoint(_bulletAimPoint.position));
+        if (Time.timeScale == 1)
+            _audioSource.pitch = UnityEngine.Random.Range(0.7f, 1);
+        else
+            _audioSource.pitch = UnityEngine.Random.Range(0.2f, 0.4f);
+        _audioSource.Play();
+        var direction = _rawSpawDirection.position - _rawSpawnPoint.position;
+        Ray ray = new Ray(_rawSpawnPoint.position, direction);
+        Debug.DrawRay(_rawSpawnPoint.position, direction * 150, Color.red, 2);
         if (Physics.Raycast(ray, out RaycastHit hit, Int32.MaxValue, _hitableLayer))
         {
-            _gunCount++;
-            //Debug.Log($"Попал {hit.transform.position}" + _gunCount);
-            Debug.Log(hit.normal);
-
+            hit.transform.TryGetComponent<ShootPoint>(out ShootPoint shootPoint);
+            shootPoint?.Attacked(_gunDamage);
+            var impactParticle = Instantiate(_impactParticle, hit.transform.position, Quaternion.identity);
+            StartCoroutine(DeleteShootParticles(impactParticle, impactParticle.main.duration));
         }
+    }
+
+    private IEnumerator DeleteShootParticles(ParticleSystem particle, float waitDuration)
+    {
+        yield return new WaitForSeconds(waitDuration);
+        Destroy(particle.gameObject);
     }
     private void Update()
     {
         FindTargetForAimPoint();
     }
+    public void PlayerMooves() => _isMooving = true;
+    public void PlayerStopMooves() => _isMooving = false;
     private void FindTargetForAimPoint()
     {
-        Ray ray = new Ray(_bulletSpawnPoint.position, transform.TransformDirection(Vector3.forward));
+        Ray ray = new Ray(_headPoint.position, _rawSpawnPoint.TransformDirection(Vector3.forward));
         if (Physics.Raycast(ray, out RaycastHit hit, Int32.MaxValue, LayerMask.GetMask("Default", "Hitable")))
         {
-            float distance = Vector3.Distance(_bulletSpawnPoint.position, hit.point);
+            if (hit.collider.transform.gameObject.layer == 6)
+            {
+                _bulletAimPoint.GetComponentInChildren<Renderer>().material.color = Color.red;
+            }
+            else
+                _bulletAimPoint.GetComponentInChildren<Renderer>().material.color = Color.green;
+
+            float distance = Vector3.Distance(_rawSpawnPoint.position, hit.point);
             float scale = Mathf.Lerp(1, 4, distance / _maxDistance);
-            _bulletAimPoint.localScale = new Vector3(scale, scale, scale);;
+            _bulletAimPoint.localScale = new Vector3(scale, scale, scale); ;
             _bulletAimPoint.position = hit.point;
+
+            hit.transform.TryGetComponent<ShootPoint>(out ShootPoint shootPoint);
+            shootPoint?.InvokeOnUnderAimAction();
         }
+
     }
     private IEnumerator Shooting(float rateOfFire)
     {
         while (true)
         {
-            if (!_isReloading)
+            if (!_isReloading && !_isMooving)
             {
                 yield return new WaitForSeconds(rateOfFire);
-                Shoot();
+                if (!_isMooving && !_isReloading)
+                    Shoot();
             }
-
+            yield return null;
         }
     }
     private Vector3 GetSprededPoint(Vector3 direction)
@@ -81,18 +135,6 @@ public class Gun : MonoBehaviour
 
         return direction;
     }
-    private IEnumerator SpawnShoot(Vector3 shootPoint)
-    {
-
-        float time = 0;
-        TrailRenderer trailRenderer = Instantiate(_trail, _trail.transform.position, Quaternion.identity);
-        trailRenderer.enabled = true;
-        while (time < 1)
-        {
-            trailRenderer.transform.position = Vector3.Lerp(_bulletTrail.transform.position, shootPoint, time);
-            time += Time.deltaTime / _trail.time;
-            yield return null;
-        }
-        Destroy(trailRenderer.gameObject);
-    }
 }
+
+
