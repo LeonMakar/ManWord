@@ -36,7 +36,6 @@ public class Spawner : MonoBehaviour, IInjectable
             enemy.gameObject.SetActive(false);
             enemy.transform.position = new Vector3(x, transform.position.y, transform.position.z);
             enemy.gameObject.SetActive(true);
-
         }
     }
 

@@ -13,5 +13,5 @@ public class StartShoot : MonoBehaviour, IInjectable
         this.controller = controller;
     }
 
-    public void CanStartShoot() => controller.IdleanimationStarted();
+    //public void CanStartShoot() => controller.IdleanimationStarted();
 }

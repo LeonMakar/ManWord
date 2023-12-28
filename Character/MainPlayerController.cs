@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Zenject;
 
-public class MainPlayerController : MonoBehaviour, IService, IInjectable
+public class MainPlayerController : MonoBehaviour
 {
     [SerializeField] private Transform _turgetTransform;
     [SerializeField] private CharacterController _characterController;
@@ -18,7 +18,7 @@ public class MainPlayerController : MonoBehaviour, IService, IInjectable
     [SerializeField] private float aimingTime;
     [SerializeField] private Animator _animator;
     [SerializeField] private Animator _rigAnimator;
-
+    [SerializeField] private PlayerStateMachine _playerStateMachine;
 
 
 
@@ -28,6 +28,7 @@ public class MainPlayerController : MonoBehaviour, IService, IInjectable
     private int _mooveValue;
     private int _shootTrigger;
 
+
     [Inject]
     private void Construct(CharacterActions inputActions, Gun gun)
     {
@@ -36,9 +37,16 @@ public class MainPlayerController : MonoBehaviour, IService, IInjectable
 
         _inputActions.Default.Enable();
         _inputActions.Default.Aiming.performed += Aiming;
-        _isMooving = Animator.StringToHash("isMooving");
-        _mooveValue = Animator.StringToHash("mooveValue");
+
         _shootTrigger = Animator.StringToHash("Shoot");
+
+        InitStateMachine();
+    }
+
+    private void InitStateMachine()
+    {
+
+        _playerStateMachine.InitStateMachine(_inputActions, _gun,_rigAnimator,_animator,_characterController,_speed);
     }
 
     public void AnimateShoot()
@@ -46,7 +54,6 @@ public class MainPlayerController : MonoBehaviour, IService, IInjectable
         _animator.SetTrigger(_shootTrigger);
     }
 
-    public void IdleanimationStarted() => _gun.PlayerStopMooves();
     private void Aiming(InputAction.CallbackContext context)
     {
         _camera.Priority = 11;
@@ -61,25 +68,6 @@ public class MainPlayerController : MonoBehaviour, IService, IInjectable
         Time.timeScale = 1;
 
 
-    }
-
-    private void Mooving()
-    {
-        if (_inputActions.Default.Move.IsPressed())
-        {
-            _gun.PlayerMooves();
-            _rigAnimator.enabled = false;
-            _animator.SetBool(_isMooving, true);
-            float input = _inputActions.Default.Move.ReadValue<float>() * Time.deltaTime * _speed;
-            _animator.SetFloat(_mooveValue, input);
-            _characterController.Move(new Vector3(input, 0, 0));
-        }
-        else
-        {
-            if (_animator.GetBool(_isMooving))
-                _animator.SetBool(_isMooving, false);
-            _rigAnimator.enabled = true;
-        }
     }
 
     private void Rotation()
@@ -103,7 +91,6 @@ public class MainPlayerController : MonoBehaviour, IService, IInjectable
     }
     private void Update()
     {
-        Mooving();
         Rotation();
     }
 }
