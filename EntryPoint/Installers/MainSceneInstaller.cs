@@ -11,9 +11,7 @@ public class MainSceneInstaller : MonoInstaller, IInitializable
     [SerializeField] private HealthBar _healthBar;
     [SerializeField] private EnemyPool _enemyPool;
     [SerializeField] private WeaponSaveData _weaponSaveData;
-
-
-
+    [SerializeField] private UIMoneyShower _moneyShower;
 
     public override void InstallBindings()
     {
@@ -27,9 +25,16 @@ public class MainSceneInstaller : MonoInstaller, IInitializable
         BindEnemyPool();
         BindEnemyFactory();
         BindWeaponSaveData();
-
+        BindMoneyShower();
     }
 
+    private void BindMoneyShower()
+    {
+        Container
+            .Bind<UIMoneyShower>()
+            .FromInstance(_moneyShower)
+            .AsSingle();
+    }
     private void BindWeaponSaveData()
     {
         Container
@@ -37,7 +42,6 @@ public class MainSceneInstaller : MonoInstaller, IInitializable
             .FromInstance(_weaponSaveData)
             .AsSingle();
     }
-
     private void BindPlayerGameObject()
     {
         Container
@@ -45,7 +49,6 @@ public class MainSceneInstaller : MonoInstaller, IInitializable
                     .FromInstance(_player.gameObject)
                     .AsSingle();
     }
-
     private void BindEnemyFactory()
     {
         Container
@@ -53,48 +56,39 @@ public class MainSceneInstaller : MonoInstaller, IInitializable
             .To<EnemyFactory>()
             .AsSingle();
     }
-
-
     private void BindEnemyPool()
     {
         Container.Bind<EnemyPool>().FromInstance(_enemyPool).AsSingle().NonLazy();
     }
-
     private void BindHealthBar()
     {
         Container.Bind<HealthBar>().FromInstance(_healthBar).AsSingle().NonLazy();
     }
-
     private void BindGunTrailRenderer()
     {
         Container.Bind<GunTrail>().FromInstance(_gunTrail).AsSingle();
     }
-
     private void BindPlayer()
     {
         Container.Bind<MainPlayerController>()
                     .FromInstance(_player)
                     .AsSingle().NonLazy();
     }
-
     private void BindEventBus()
     {
         Container.Bind<EventBus>().AsSingle().NonLazy();
     }
-
     private void BindInputAction()
     {
         Container.Bind<CharacterActions>().FromNew()
             .AsSingle().NonLazy();
 
     }
-
     private void BindGun()
     {
         Container.Bind<Gun>()
             .FromInstance(_gun).AsSingle();
     }
-
     public void Initialize()
     {
 

@@ -15,12 +15,13 @@ public class MainPlayerController : MonoBehaviour, IPlayer
     [SerializeField] private CharacterController _characterController;
     [SerializeField, Range(0f, 30f)] private float _speed;
     [SerializeField, Range(0f, 100f)] private float _sensetive;
-    [SerializeField] CinemachineVirtualCamera _camera;
     [SerializeField] private float aimingTime;
     [SerializeField] private Animator _animator;
     [SerializeField] private Animator _rigAnimator;
     [SerializeField] private PlayerStateMachine _playerStateMachine;
 
+    public CinemachineVirtualCamera AimCamera;
+    public Transform AimCamTransform;
 
 
     private CharacterActions _inputActions;
@@ -58,13 +59,13 @@ public class MainPlayerController : MonoBehaviour, IPlayer
 
     private void StartAiming(InputAction.CallbackContext context)
     {
-        _camera.Priority = 15;
+        AimCamera.Priority = 15;
         StartCoroutine(StartAimingTimer(aimingTime));
         Time.timeScale = 0.5f;
     }
     public void StartAiming(float aimingBonusTime)
     {
-        _camera.Priority = 15;
+        AimCamera.Priority = 15;
         StartCoroutine(StartAimingTimer(aimingBonusTime));
         Time.timeScale = 0.5f;
     }
@@ -72,7 +73,7 @@ public class MainPlayerController : MonoBehaviour, IPlayer
     private IEnumerator StartAimingTimer(float aimingTime)
     {
         yield return new WaitForSeconds(aimingTime);
-        _camera.Priority = 9;
+        AimCamera.Priority = 9;
         Time.timeScale = 1;
     }
 

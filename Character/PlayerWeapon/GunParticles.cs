@@ -14,6 +14,7 @@ public class GunParticles : MonoBehaviour
     private GunParticlesPool _gunShootSmokePool;
     private GunParticlesPool _gunHitPool;
     private TrailPool _gunTrailPool;
+    public GameObject TrailGameObject { get; private set; }
 
 
     public void InitializeGunParticlePools()
@@ -64,17 +65,17 @@ public class GunParticles : MonoBehaviour
         Vector3 finishPoint = hit.point;
         float distance = Vector3.Distance(startPoint, finishPoint);
         float remeningDistance = distance;
-        GameObject trailGameObject = _gunTrailPool.GetFromPool();
-        trailGameObject.transform.position = startPoint;
-        trailGameObject.transform.rotation = Quaternion.LookRotation(finishPoint - startPoint);
+        TrailGameObject = _gunTrailPool.GetFromPool();
+        TrailGameObject.transform.position = startPoint;
+        TrailGameObject.transform.rotation = Quaternion.LookRotation(finishPoint - startPoint);
         while (remeningDistance > 0)
         {
             var trailPos = Vector3.Lerp(startPoint, finishPoint, 1 - (remeningDistance / distance));
-            trailGameObject.transform.position = trailPos;
+            TrailGameObject.transform.position = trailPos;
             remeningDistance -= _trailSpeed * Time.deltaTime;
             yield return null;
         }
-        trailGameObject.SetActive(false);
+        TrailGameObject.SetActive(false);
     }
 }
 

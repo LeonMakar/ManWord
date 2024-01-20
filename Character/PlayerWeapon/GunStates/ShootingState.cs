@@ -54,10 +54,10 @@ public class ShootingState : BaseState<GunStateMachine.GunStates>
         Ray ray = CreateRay();
         if (Physics.Raycast(ray, out RaycastHit hit, 100, _gun.HitableLayer))
         {
+            _gun.GunParticles.ActivateTrailParticles(hit);
             hit.transform.TryGetComponent(out IShootable shootableObject);
             shootableObject?.Attacked(_gun.GunDamage);
             _gun.GunParticles.ActivateHitParticles(hit);
-            _gun.GunParticles.ActivateTrailParticles(hit);
         }
 
         // ---- Visual and Audio effects ---- //

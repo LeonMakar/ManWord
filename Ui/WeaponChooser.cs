@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 using UnityEngine.UI;
 using Zenject;
 
@@ -36,6 +37,9 @@ public class WeaponChooser : MonoBehaviour
 
     [SerializeField] private float _swiftSpeed;
 
+    [SerializeField] private TextMeshProUGUI _moneyText;
+
+
     public GunData _choosenGun { get; private set; }
 
     private GameObject _oldWeapon;
@@ -45,20 +49,22 @@ public class WeaponChooser : MonoBehaviour
     private float _time;
     private Gun _gun;
     private WeaponSaveData _weaponSaveData;
-
+    private UIMoneyShower _moneyShower;
     private bool _isSwiping;
     public static Action Swipe;
 
 
 
     [Inject]
-    private void Construct(Gun gun, WeaponSaveData weaponSaveData)
+    private void Construct(Gun gun, WeaponSaveData weaponSaveData, UIMoneyShower moneyShower)
     {
         _gun = gun;
         _weaponSaveData = weaponSaveData;
+        _moneyShower = moneyShower;
     }
 
     #region WeaponeSwipeMooving
+
     public void ChangeToNextWeapon()
     {
 
@@ -139,12 +145,16 @@ public class WeaponChooser : MonoBehaviour
         _weaponNameText.text = _weaponsData[_queuePosition - 1].GunName.ToString();
     }
     #endregion
+
+    #region Initialization 
     public void SetMenuAsByingMenu()
     {
         _weaponsData = _weaponSaveData.NonByedWeapon;
         _buyAndSelectButtone.onClick.RemoveAllListeners();
         _buyAndSelectButtone.onClick.AddListener(BuyWeapon);
         _buyAndSelectButtoneText.text = "Buy";
+        _moneyText.text = _moneyShower.Money.ToString();
+
     }
     public void SetMenuAsSelectingMenu()
     {
@@ -152,7 +162,9 @@ public class WeaponChooser : MonoBehaviour
         _buyAndSelectButtone.onClick.RemoveAllListeners();
         _buyAndSelectButtone.onClick.AddListener(SelectWeapone);
         _buyAndSelectButtoneText.text = "Select";
+        _moneyText.text = _moneyShower.Money.ToString();
     }
+    #endregion
 
     public void DeleteMenu()
     {

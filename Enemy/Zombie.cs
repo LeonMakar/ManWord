@@ -11,9 +11,13 @@ public abstract class Zombie : MonoBehaviour
     [SerializeField] protected int MaxHealth;
     [SerializeField] protected float Speed;
     [SerializeField] private int _healthRandomizerNumber = 30;
+    [SerializeField] private int BaseMoneyToDrop;
+    [SerializeField] private int MoneyRandomizingRange;
+
     [field: SerializeField] public float RotationInterval { get; private set; }
 
     protected string ZombieName;
+    protected int HoldedMoney;
 
     private int _maxHealthAfterRandomizing;
 
@@ -32,6 +36,9 @@ public abstract class Zombie : MonoBehaviour
 
     protected GameObject ActiveScin;
 
+    private UIMoneyShower _moneyShower;
+    private MainPlayerController _player;
+    private Gun _gun;
     private HealthBar _healthBar;
     private bool _canChangeHealthBar = true;
 
@@ -40,16 +47,24 @@ public abstract class Zombie : MonoBehaviour
     private int _isHited;
     private int _isDied;
 
+    #region Initialization
     [Inject]
-    public void Construct(HealthBar healthBar)
+    public void Construct(HealthBar healthBar, UIMoneyShower moneyShower, MainPlayerController player, Gun gun)
     {
         _healthBar = healthBar;
+        _moneyShower = moneyShower;
+        _player = player;
+        _gun = gun;
     }
     private void Awake()
     {
         _isHited = Animator.StringToHash("Hit");
         _isDied = Animator.StringToHash("isDead");
+        CalculateMoneyHolding();
     }
+    #endregion
+
+    #region Ragdoll
     public void AddForceToBody(Vector3 forceDirection)
     {
         _rigidBodyCenter.AddForce(forceDirection, ForceMode.Impulse);
@@ -68,10 +83,14 @@ public abstract class Zombie : MonoBehaviour
             rigidbody.isKinematic = boolian;
         }
     }
+    #endregion
+
+    #region ActionsAfterDeath
     public void DoActionsAfterSpawning()
     {
         ChangeZombieScin();
         RandomizeZombieHealth();
+        CalculateMoneyHolding();
     }
     private void ChangeZombieScin()
     {
@@ -86,22 +105,10 @@ public abstract class Zombie : MonoBehaviour
         _maxHealthAfterRandomizing = UnityEngine.Random.Range(MaxHealth - _healthRandomizerNumber, MaxHealth + _healthRandomizerNumber);
         Health = _maxHealthAfterRandomizing;
     }
-
-    public void GetDamage(int damageValue)
+    private void CalculateMoneyHolding()
     {
-        if (Health - damageValue > 0)
-            Health -= damageValue;
-        else if (Health > 0)
-        {
-            Health = 0;
-            _animator.SetTrigger(_isDied);
-        }
-
-        _healthBar?.ChangeSliderValues(_maxHealthAfterRandomizing, 0, Health, damageValue);
-        //_animator.SetLayerWeight(1, 1);
-        _animator.SetTrigger(_isHited);
+        HoldedMoney = Random.Range(BaseMoneyToDrop - MoneyRandomizingRange, BaseMoneyToDrop + MoneyRandomizingRange);
     }
-
     public void ResetAllParameters()
     {
         _skins[_scinNumber].SetActive(false);
@@ -110,7 +117,9 @@ public abstract class Zombie : MonoBehaviour
     }
 
     public abstract void DethActions();
+    #endregion
 
+    #region HealthBarConnection
     public void OnUnderAim()
     {
         if (_healthBar.IsHealthBarInvisible())
@@ -128,15 +137,46 @@ public abstract class Zombie : MonoBehaviour
         }
 
     }
+    private IEnumerator CanChangeHealBarValues()
+    {
+        yield return new WaitForSeconds(2f);
+        _canChangeHealthBar = true;
+    }
+
+    #endregion
+
+    public void GetDamage(int damageValue)
+    {
+        if (Health - damageValue > 0)
+            Health -= damageValue;
+        else if (Health - damageValue <= 0 && Health != 0)
+            Deading();
+
+        _healthBar?.ChangeSliderValues(_maxHealthAfterRandomizing, 0, Health, damageValue);
+        _animator.SetTrigger(_isHited);
+    }
+    private void Deading()
+    {
+        Health = 0;
+        if (Time.timeScale < 1)
+        {
+            Debug.Log(_player);
+            Debug.Log(_player.AimCamera);
+            _player.AimCamera.Follow = _gun.GunParticles.TrailGameObject.transform;
+
+        }
+        _animator.SetTrigger(_isDied);
+        _moneyShower.AddMoney(HoldedMoney);
+    }
+    public void StoppingZoomingBulletTrail()
+    {
+        _player.AimCamera.Follow = _player.AimCamTransform;
+        //_player.AimCamera.Follow = null;
+    }
 
     private void Update()
     {
         CharacterController.Move(Vector3.back * Speed * Time.deltaTime);
     }
 
-    private IEnumerator CanChangeHealBarValues()
-    {
-        yield return new WaitForSeconds(2f);
-        _canChangeHealthBar = true;
-    }
 }
