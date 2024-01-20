@@ -47,6 +47,7 @@ public class Gun : MonoBehaviour
     public bool IsGameStarted { get; private set; }
     public bool TargetIsFinded { get; private set; }
 
+    private GameObject _gunPrefab;
     #region Initialization
     [Inject]
     private void Construct(MainPlayerController mainPlayerController, GunTrail gunTrail, EventBus eventBus, CharacterActions inputActions)
@@ -85,10 +86,12 @@ public class Gun : MonoBehaviour
 
     private void CreateWeaponPrefab()
     {
-        var weaponPrefab = Instantiate(GunData.GunPrefab, _gunPlace.position, _gunPlace.rotation);
-        weaponPrefab.transform.parent = transform;
-        weaponPrefab.transform.localScale = _gunPlace.localScale;
-        InitializeGunParticles(weaponPrefab);
+        if (_gunPrefab != null)
+            Destroy(_gunPrefab);
+        _gunPrefab = Instantiate(GunData.GunPrefab, _gunPlace.position, _gunPlace.rotation);
+        _gunPrefab.transform.parent = transform;
+        _gunPrefab.transform.localScale = _gunPlace.localScale;
+        InitializeGunParticles(_gunPrefab);
     }
     #endregion
     public void EqipeNewGun(GunData gun)

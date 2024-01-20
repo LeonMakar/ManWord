@@ -10,7 +10,7 @@ public class MainSceneInstaller : MonoInstaller, IInitializable
     [SerializeField] private GunTrail _gunTrail;
     [SerializeField] private HealthBar _healthBar;
     [SerializeField] private EnemyPool _enemyPool;
-    [SerializeField] private WeaponChooser _weaponChooser;
+    [SerializeField] private WeaponSaveData _weaponSaveData;
 
 
 
@@ -26,15 +26,15 @@ public class MainSceneInstaller : MonoInstaller, IInitializable
         BindHealthBar();
         BindEnemyPool();
         BindEnemyFactory();
-        //BindWeaponChooser();
+        BindWeaponSaveData();
 
     }
 
-    private void BindWeaponChooser()
+    private void BindWeaponSaveData()
     {
         Container
-            .Bind<WeaponChooser>()
-            .FromInstance(_weaponChooser)
+            .Bind<WeaponSaveData>()
+            .FromInstance(_weaponSaveData)
             .AsSingle();
     }
 

@@ -16,7 +16,6 @@ public class GameOverTrigger : MonoBehaviour
         if (other.gameObject.tag == "Enemy")
         {
             _eventBus.Invoke<GameOverSignal>(new GameOverSignal(true));
-            Debug.Log("ֲûחמג סמבûעטÿ");
         }
     }
 }

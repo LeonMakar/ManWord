@@ -22,7 +22,7 @@ public class ShootingState : BaseState<GunStateMachine.GunStates>
     public override void EnterToState()
     {
         _isOnShootingState = true;
-        _gun.GunParticles.StartCoroutine(Shooting(_gun.GunData.RateOfFire));
+        _gun.StartCoroutine(Shooting(_gun.GunData.RateOfFire));
         _gun.AudioSource.clip = _gun.GunData.ShootSound;
     }
 
@@ -30,7 +30,7 @@ public class ShootingState : BaseState<GunStateMachine.GunStates>
     {
         _isOnShootingState = false;
         _canShoot = false;
-        //_gun.GunParticles.StopAllCoroutines();
+        _gun.StopAllCoroutines();
         IsTransitionStart = false;
     }
 
@@ -43,7 +43,6 @@ public class ShootingState : BaseState<GunStateMachine.GunStates>
         }
         else if (_inputActions.Default.Move.WasReleasedThisFrame() || !_gun.IsGameStarted)
         {
-            _canShoot = true;
             _gun.LineRenderer.enabled = true;
         }
         if (_canShoot && _gun.TargetIsFinded && _isOnShootingState && !_inputActions.Default.Move.IsPressed())
@@ -64,7 +63,6 @@ public class ShootingState : BaseState<GunStateMachine.GunStates>
         // ---- Visual and Audio effects ---- //
         _gun.MainPlayerController.AnimateShoot();
         _gun.GunParticles.ActivateParticlesAfterShoot();
-        //_gun.GunTrail.SetShootPoint(GetSprededPoint(_gun.BulletAimPoint.position));
         PlayShootAudio();
 
 

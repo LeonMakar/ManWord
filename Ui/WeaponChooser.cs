@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using Zenject;
 
 public class WeaponChooser : MonoBehaviour
@@ -20,9 +21,13 @@ public class WeaponChooser : MonoBehaviour
     [SerializeField] TextMeshProUGUI _costText;
     [SerializeField] TextMeshProUGUI _weaponNameText;
 
+    [Header("Button")]
+    [SerializeField] TextMeshProUGUI _buyAndSelectButtoneText;
+    [SerializeField] Button _buyAndSelectButtone;
+
 
     [Space(20)]
-    [SerializeField] List<GunData> _weaponsData;
+    [SerializeField] List<GunData> _weaponsData = new List<GunData>();
     [SerializeField] Transform _weaponStartPosition;
     [SerializeField] Transform _weaponFinishPosition;
     [SerializeField] Transform _weaponFarAwayPosition;
@@ -39,19 +44,21 @@ public class WeaponChooser : MonoBehaviour
     private int _queuePosition;
     private float _time;
     private Gun _gun;
-    [SerializeField] private GunData _defoltGun;
+    private WeaponSaveData _weaponSaveData;
 
     private bool _isSwiping;
     public static Action Swipe;
 
 
+
     [Inject]
-    private void Construct(Gun gun)
+    private void Construct(Gun gun, WeaponSaveData weaponSaveData)
     {
         _gun = gun;
-        _gun.EqipeNewGun(_defoltGun);
+        _weaponSaveData = weaponSaveData;
     }
 
+    #region WeaponeSwipeMooving
     public void ChangeToNextWeapon()
     {
 
@@ -99,36 +106,6 @@ public class WeaponChooser : MonoBehaviour
                 Swipe.Invoke();
             }
     }
-
-    public void DeleteMenu()
-    {
-        foreach (var item in _weaponsMemmoryList)
-        {
-            Destroy(item.gameObject);
-            _weaponsMemmoryList.Remove(item);
-        }
-        Destroy(_newWeapon.gameObject);
-        Destroy(_oldWeapon.gameObject);
-        _newWeapon = null;
-        _oldWeapon = null;
-        _queuePosition = 0;
-    }
-    public void SelectWeapone()
-    {
-        _gun.EqipeNewGun(_weaponsData[_queuePosition - 1]);
-    }
-
-    private void ChangeParametersText()
-    {
-        _damageText.text = _weaponsData[_queuePosition - 1].Damage.ToString();
-        _fireRateText.text = _weaponsData[_queuePosition - 1].RateOfFire.ToString();
-        _accuranceText.text = _weaponsData[_queuePosition - 1].GunSpred.ToString();
-        _ammoText.text = _weaponsData[_queuePosition - 1].BulletAmmount.ToString();
-        _reloadingText.text = _weaponsData[_queuePosition - 1].ReloadingTime.ToString() + " sec";
-        _costText.text = _weaponsData[_queuePosition - 1].GunCoast.ToString();
-        _weaponNameText.text = _weaponsData[_queuePosition - 1].GunName.ToString();
-    }
-
     private IEnumerator MooveWeapon(Transform startPosition, Transform finishPosition, GameObject weaponToMoove)
     {
         _time = 0;
@@ -151,6 +128,58 @@ public class WeaponChooser : MonoBehaviour
             Destroy(weaponToMoove.gameObject);
         _isSwiping = false;
     }
+    private void ChangeParametersText()
+    {
+        _damageText.text = _weaponsData[_queuePosition - 1].Damage.ToString();
+        _fireRateText.text = _weaponsData[_queuePosition - 1].RateOfFire.ToString();
+        _accuranceText.text = _weaponsData[_queuePosition - 1].GunSpred.ToString();
+        _ammoText.text = _weaponsData[_queuePosition - 1].BulletAmmount.ToString();
+        _reloadingText.text = _weaponsData[_queuePosition - 1].ReloadingTime.ToString() + " sec";
+        _costText.text = _weaponsData[_queuePosition - 1].GunCoast.ToString();
+        _weaponNameText.text = _weaponsData[_queuePosition - 1].GunName.ToString();
+    }
+    #endregion
+    public void SetMenuAsByingMenu()
+    {
+        _weaponsData = _weaponSaveData.NonByedWeapon;
+        _buyAndSelectButtone.onClick.RemoveAllListeners();
+        _buyAndSelectButtone.onClick.AddListener(BuyWeapon);
+        _buyAndSelectButtoneText.text = "Buy";
+    }
+    public void SetMenuAsSelectingMenu()
+    {
+        _weaponsData = _weaponSaveData.ByedWeapon;
+        _buyAndSelectButtone.onClick.RemoveAllListeners();
+        _buyAndSelectButtone.onClick.AddListener(SelectWeapone);
+        _buyAndSelectButtoneText.text = "Select";
+    }
+
+    public void DeleteMenu()
+    {
+        foreach (var item in _weaponsMemmoryList)
+        {
+            Destroy(item.gameObject);
+            _weaponsMemmoryList.Remove(item);
+        }
+        if (_newWeapon != null)
+            Destroy(_newWeapon.gameObject);
+        if (_oldWeapon != null)
+            Destroy(_oldWeapon.gameObject);
+        _newWeapon = null;
+        _oldWeapon = null;
+        _queuePosition = 0;
+    }
+    public void SelectWeapone()
+    {
+        _gun.EqipeNewGun(_weaponsData[_queuePosition - 1]);
+        _weaponSaveData.SetNewDefaultGun(_weaponsData[_queuePosition - 1]);
+    }
+    public void BuyWeapon()
+    {
+        _weaponSaveData.ByingWeapon(_weaponsData[_queuePosition - 1]);
+    }
+
+
 
     private void Update()
     {
