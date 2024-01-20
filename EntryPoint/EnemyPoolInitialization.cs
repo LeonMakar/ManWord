@@ -5,10 +5,10 @@ public class EnemyPoolInitialization : MonoBehaviour
 {
     [SerializeField] EnemyPool _enemyPool;
 
-    private IEnemyFactory enemyFactory;
+    private IFactory enemyFactory;
 
     [Inject]
-    public void Construct(IEnemyFactory simpleZombyFactory)
+    public void Construct(IFactory simpleZombyFactory)
     {
         enemyFactory = simpleZombyFactory;
         enemyFactory.Load();

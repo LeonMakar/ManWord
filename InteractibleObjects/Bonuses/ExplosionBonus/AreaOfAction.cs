@@ -10,12 +10,14 @@ public class AreaOfAction : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
+        if(other.gameObject.tag == GameConstans.EnemyTag)
         _objects.Add(other.gameObject);
     }
 
     private void OnTriggerExit(Collider other)
     {
-        _objects.Remove(other.gameObject);
+        if (other.gameObject.tag == GameConstans.EnemyTag)
+            _objects.Remove(other.gameObject);
     }
 
     public List<GameObject> GetAllObjectsInArea()

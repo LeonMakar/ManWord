@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,24 +5,40 @@ using Zenject;
 
 public abstract class Zombie : MonoBehaviour
 {
+    //----------Zombie characteristics----------//
+    [Space(10), Header("Characteristics")]
     [SerializeField] protected int Health;
     [SerializeField] protected int MaxHealth;
-    private int _changebleMaxHealth;
     [SerializeField] protected float Speed;
-    [SerializeField] protected CharacterController CharacterController;
-    [SerializeField] private Animator _animator;
-    [SerializeField] private List<GameObject> _skins;
     [SerializeField] private int _healthRandomizerNumber = 30;
+    [field: SerializeField] public float RotationInterval { get; private set; }
 
     protected string ZombieName;
+
+    private int _maxHealthAfterRandomizing;
+
+    //----------Scins----------//
+    [Space(10), Header("Scins and RididBodyes")]
+
+    [SerializeField] private Rigidbody _rigidBodyCenter;
+    [SerializeField] private List<GameObject> _skins;
+    [SerializeField] private List<Rigidbody> _bodies;
+    private int _scinNumber;
+
+    //----------Services----------//
+    [Space(10), Header("Services")]
+    [SerializeField] private Animator _animator;
+    [SerializeField] protected CharacterController CharacterController;
+
     protected GameObject ActiveScin;
 
-
-    private int _isHited;
-    private int _isDied;
-    [Inject]
     private HealthBar _healthBar;
     private bool _canChangeHealthBar = true;
+
+
+    //----------Animator parameters fields----------//
+    private int _isHited;
+    private int _isDied;
 
     [Inject]
     public void Construct(HealthBar healthBar)
@@ -35,24 +50,41 @@ public abstract class Zombie : MonoBehaviour
         _isHited = Animator.StringToHash("Hit");
         _isDied = Animator.StringToHash("isDead");
     }
-    private void OnEnable()
+    public void AddForceToBody(Vector3 forceDirection)
+    {
+        _rigidBodyCenter.AddForce(forceDirection, ForceMode.Impulse);
+    }
+
+    /// <summary>
+    /// True - Ragdoll is Unactive,
+    /// False - Ragdoll is Active
+    /// </summary>
+    /// <param name="boolian"></param>
+    public void DiactivatingRagdoll(bool boolian)
+    {
+        _animator.enabled = boolian;
+        foreach (var rigidbody in _bodies)
+        {
+            rigidbody.isKinematic = boolian;
+        }
+    }
+    public void DoActionsAfterSpawning()
     {
         ChangeZombieScin();
         RandomizeZombieHealth();
     }
-
     private void ChangeZombieScin()
     {
-        int scinNumber = UnityEngine.Random.Range(0, _skins.Count);
-        _skins[scinNumber].SetActive(true);
-        ActiveScin = _skins[scinNumber];
+        _scinNumber = UnityEngine.Random.Range(0, _skins.Count);
+        _skins[_scinNumber].SetActive(true);
+        ActiveScin = _skins[_scinNumber];
         ZombieName = ActiveScin.name;
     }
 
     private void RandomizeZombieHealth()
     {
-        _changebleMaxHealth = UnityEngine.Random.Range(MaxHealth - _healthRandomizerNumber, MaxHealth + _healthRandomizerNumber);
-        Health = _changebleMaxHealth;
+        _maxHealthAfterRandomizing = UnityEngine.Random.Range(MaxHealth - _healthRandomizerNumber, MaxHealth + _healthRandomizerNumber);
+        Health = _maxHealthAfterRandomizing;
     }
 
     public void GetDamage(int damageValue)
@@ -65,13 +97,14 @@ public abstract class Zombie : MonoBehaviour
             _animator.SetTrigger(_isDied);
         }
 
-        _healthBar?.ChangeSliderValues(_changebleMaxHealth, 0, Health, damageValue);
+        _healthBar?.ChangeSliderValues(_maxHealthAfterRandomizing, 0, Health, damageValue);
         //_animator.SetLayerWeight(1, 1);
         _animator.SetTrigger(_isHited);
     }
 
     public void ResetAllParameters()
     {
+        _skins[_scinNumber].SetActive(false);
         Health = MaxHealth;
         transform.position = Vector3.zero;
     }
@@ -90,7 +123,7 @@ public abstract class Zombie : MonoBehaviour
         {
             _canChangeHealthBar = false;
             _healthBar.EnemyOnUnderAim = true;
-            _healthBar.SetNewHealthBarValue(ZombieName, _changebleMaxHealth, Health);
+            _healthBar.SetNewHealthBarValue(ZombieName, _maxHealthAfterRandomizing, Health);
             StartCoroutine(CanChangeHealBarValues());
         }
 
@@ -105,20 +138,5 @@ public abstract class Zombie : MonoBehaviour
     {
         yield return new WaitForSeconds(2f);
         _canChangeHealthBar = true;
-    }
-
-
-}
-public struct ZombieProperties
-{
-    public string Name;
-    public float MaxHealth;
-    public float CurrentHEalth;
-
-    public ZombieProperties(string name, float maxHealth, float currentHealth)
-    {
-        Name = name;
-        MaxHealth = maxHealth;
-        CurrentHEalth = currentHealth;
     }
 }

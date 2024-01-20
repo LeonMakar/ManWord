@@ -10,7 +10,7 @@ public class EnemyPool : ScriptableObject
 
     public CustomePool<SimpleZomby> GetSimpleZombyPool() => _simpleZombyPool;
 
-    public void Initialize(IEnemyFactory enemyFactory)
+    public void Initialize(IFactory enemyFactory)
     {
         _simpleZombyPool = new CustomePool<SimpleZomby>(enemyFactory, 10);
     }

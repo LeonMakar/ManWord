@@ -5,6 +5,7 @@ public abstract class BaseState<EState> where EState : Enum
 {
     public EState StateKey { get; private set; }
     public Action<EState> ChangeStateAction;
+    protected bool IsTransitionStart = false;
 
     public BaseState(EState key)
     {

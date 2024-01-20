@@ -6,9 +6,10 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Networking.PlayerConnection;
 using Zenject;
 
-public class MainPlayerController : MonoBehaviour
+public class MainPlayerController : MonoBehaviour, IPlayer
 {
     [SerializeField] private Transform _turgetTransform;
     [SerializeField] private CharacterController _characterController;
@@ -28,6 +29,8 @@ public class MainPlayerController : MonoBehaviour
     private int _mooveValue;
     private int _shootTrigger;
 
+    public Gun Gun => _gun;
+
 
     [Inject]
     private void Construct(CharacterActions inputActions, Gun gun)
@@ -36,7 +39,7 @@ public class MainPlayerController : MonoBehaviour
         _gun = gun;
 
         _inputActions.Default.Enable();
-        _inputActions.Default.Aiming.performed += Aiming;
+        _inputActions.Default.Aiming.performed += StartAiming;
 
         _shootTrigger = Animator.StringToHash("Shoot");
 
@@ -45,8 +48,7 @@ public class MainPlayerController : MonoBehaviour
 
     private void InitStateMachine()
     {
-
-        _playerStateMachine.InitStateMachine(_inputActions, _gun,_rigAnimator,_animator,_characterController,_speed);
+        _playerStateMachine.InitStateMachine(_inputActions, _gun, _rigAnimator, _animator, _characterController, _speed);
     }
 
     public void AnimateShoot()
@@ -54,20 +56,24 @@ public class MainPlayerController : MonoBehaviour
         _animator.SetTrigger(_shootTrigger);
     }
 
-    private void Aiming(InputAction.CallbackContext context)
+    private void StartAiming(InputAction.CallbackContext context)
     {
-        _camera.Priority = 11;
-        StartCoroutine(CloseAiming(aimingTime));
+        _camera.Priority = 15;
+        StartCoroutine(StartAimingTimer(aimingTime));
+        Time.timeScale = 0.5f;
+    }
+    public void StartAiming(float aimingBonusTime)
+    {
+        _camera.Priority = 15;
+        StartCoroutine(StartAimingTimer(aimingBonusTime));
         Time.timeScale = 0.5f;
     }
 
-    private IEnumerator CloseAiming(float aimingTime)
+    private IEnumerator StartAimingTimer(float aimingTime)
     {
         yield return new WaitForSeconds(aimingTime);
         _camera.Priority = 9;
         Time.timeScale = 1;
-
-
     }
 
     private void Rotation()
@@ -87,8 +93,8 @@ public class MainPlayerController : MonoBehaviour
         else
             _turgetTransform.position = new Vector3(_turgetTransform.position.x, _turgetTransform.position.y + input.y, _turgetTransform.position.z);
 
-
     }
+
     private void Update()
     {
         Rotation();

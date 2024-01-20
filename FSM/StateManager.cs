@@ -15,11 +15,11 @@ public abstract class StateManager<EState> : MonoBehaviour where EState : Enum
         CurrentState.ChangeStateAction += TransitionToNextState;
         CurrentState.EnterToState();
     }
+
     private void Update()
     {
         if (!_isTransitioningProccesWay)
             CurrentState.UpdateState();
-        Debug.Log(CurrentState.ToString());
     }
 
     private void TransitionToNextState(EState nextStateKey)
@@ -29,8 +29,8 @@ public abstract class StateManager<EState> : MonoBehaviour where EState : Enum
         CurrentState.ChangeStateAction -= TransitionToNextState;
         CurrentState = States[nextStateKey];
         CurrentState.ChangeStateAction += TransitionToNextState;
-        _isTransitioningProccesWay = false;
         CurrentState.EnterToState();
+        _isTransitioningProccesWay = false;
     }
 
     protected void OnTriggerEnter(Collider other)

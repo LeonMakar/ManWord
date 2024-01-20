@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 
-public class EnemyFactory : IEnemyFactory
+public class EnemyFactory : IFactory
 {
     private DiContainer _diContainer;
 
@@ -21,4 +21,5 @@ public class EnemyFactory : IEnemyFactory
     {
         return _diContainer.InstantiatePrefab(_simpleZomby);
     }
+
 }

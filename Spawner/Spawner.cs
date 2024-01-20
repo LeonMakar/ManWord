@@ -1,6 +1,4 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 
@@ -11,13 +9,17 @@ public class Spawner : MonoBehaviour, IInjectable
 
 
     private EnemyPool _enemyPool;
+    private EventBus _eventBus;
 
-
+    private bool _gameIsActive;
 
     [Inject]
-    private void Construct(EnemyPool enemyPool)
+    private void Construct(EnemyPool enemyPool, EventBus eventBus)
     {
         _enemyPool = enemyPool;
+        _eventBus = eventBus;
+
+        _eventBus.Subscrube<StartGameSignal>(SetGameActivity);
     }
 
     private void Start()
@@ -25,17 +27,29 @@ public class Spawner : MonoBehaviour, IInjectable
         StartCoroutine(SpawnSimpleZombie());
     }
 
+    private void SetGameActivity(StartGameSignal signal)
+    {
+        _gameIsActive = signal.GameIsStarted;
+    }
+
     private IEnumerator SpawnSimpleZombie()
     {
         while (true)
         {
-            yield return new WaitForSeconds(_simpleZombieSpawnTime);
+            if (_gameIsActive)
+            {
+                yield return new WaitForSeconds(_simpleZombieSpawnTime);
 
-            var enemy = _enemyPool.GetSimpleZombyPool().GetFromPool();
-            float x = RandomizeXPosition();
-            enemy.gameObject.SetActive(false);
-            enemy.transform.position = new Vector3(x, transform.position.y, transform.position.z);
-            enemy.gameObject.SetActive(true);
+                var enemy = _enemyPool.GetSimpleZombyPool().GetFromPool();
+                float x = RandomizeXPosition();
+                enemy.gameObject.SetActive(false);
+                enemy.transform.position = new Vector3(x, transform.position.y, transform.position.z);
+                enemy.transform.rotation = Quaternion.LookRotation(Vector3.back);
+                enemy.gameObject.SetActive(true);
+                enemy.DoActionsAfterSpawning();
+            }
+            else
+                yield return null;
         }
     }
 

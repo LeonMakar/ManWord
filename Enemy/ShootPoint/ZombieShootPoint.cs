@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ZombieShootPoint : MonoBehaviour,IShootable
+public class ZombieShootPoint : MonoBehaviour,IShootable,IUnderAimable
 {
     [SerializeField] protected Zombie Zombie;
     [SerializeField, Range(0.2f, 5)] protected float DamageModificator = 1;

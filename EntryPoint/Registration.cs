@@ -8,7 +8,6 @@ public class Registration : MonoBehaviour
     [SerializeField] Gun _gun;
     [SerializeField] MainPlayerController _mainPlayerController;
     [SerializeField] GunTrail _gunTrail;
-    [SerializeField] StartShoot _startShoot;
     [SerializeField] HealthBar _healthBar;
     [SerializeField] EventBus _eventBus;
     [SerializeField] EnemyPool _enemyPool;
