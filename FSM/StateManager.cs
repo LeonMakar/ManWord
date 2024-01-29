@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.Scripting;
 
 
 
@@ -9,8 +11,11 @@ public abstract class StateManager<EState> : MonoBehaviour where EState : Enum
     protected Dictionary<EState, BaseState<EState>> States = new Dictionary<EState, BaseState<EState>>();
     protected BaseState<EState> CurrentState;
     private bool _isTransitioningProccesWay = false;
+
     protected void StartStateMachine(EState startState)
     {
+        if (CurrentState != null)
+            CurrentState.ChangeStateAction -= TransitionToNextState;
         CurrentState = States[startState];
         CurrentState.ChangeStateAction += TransitionToNextState;
         CurrentState.EnterToState();
@@ -22,7 +27,7 @@ public abstract class StateManager<EState> : MonoBehaviour where EState : Enum
             CurrentState.UpdateState();
     }
 
-    private void TransitionToNextState(EState nextStateKey)
+    protected void TransitionToNextState(EState nextStateKey)
     {
         _isTransitioningProccesWay = true;
         CurrentState.ExitFromState();

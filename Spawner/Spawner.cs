@@ -2,60 +2,28 @@ using System.Collections;
 using UnityEngine;
 using Zenject;
 
-public class Spawner : MonoBehaviour, IInjectable
+public abstract class Spawner : MonoBehaviour
 {
-    [SerializeField] private Vector2 _spawnBordersPosition;
-    [SerializeField] private float _simpleZombieSpawnTime;
+    [SerializeField] protected Vector2 SpawnBordersPosition;
+    [SerializeField] protected float SpawnTimeRate;
 
+    protected bool GameIsActive;
 
-    private EnemyPool _enemyPool;
-    private EventBus _eventBus;
-
-    private bool _gameIsActive;
-
-    [Inject]
-    private void Construct(EnemyPool enemyPool, EventBus eventBus)
+    public void StartSpawning()
     {
-        _enemyPool = enemyPool;
-        _eventBus = eventBus;
-
-        _eventBus.Subscrube<StartGameSignal>(SetGameActivity);
+        StartCoroutine(Spawning());
     }
 
-    private void Start()
+    public void SetGameActivity(bool boolian)
     {
-        StartCoroutine(SpawnSimpleZombie());
+        GameIsActive = boolian;
     }
 
-    private void SetGameActivity(StartGameSignal signal)
-    {
-        _gameIsActive = signal.GameIsStarted;
-    }
+    protected abstract IEnumerator Spawning();
 
-    private IEnumerator SpawnSimpleZombie()
+    protected float RandomizeXPosition()
     {
-        while (true)
-        {
-            if (_gameIsActive)
-            {
-                yield return new WaitForSeconds(_simpleZombieSpawnTime);
-
-                var enemy = _enemyPool.GetSimpleZombyPool().GetFromPool();
-                float x = RandomizeXPosition();
-                enemy.gameObject.SetActive(false);
-                enemy.transform.position = new Vector3(x, transform.position.y, transform.position.z);
-                enemy.transform.rotation = Quaternion.LookRotation(Vector3.back);
-                enemy.gameObject.SetActive(true);
-                enemy.DoActionsAfterSpawning();
-            }
-            else
-                yield return null;
-        }
-    }
-
-    private float RandomizeXPosition()
-    {
-        float x = UnityEngine.Random.Range(_spawnBordersPosition.x, _spawnBordersPosition.y);
+        float x = UnityEngine.Random.Range(SpawnBordersPosition.x, SpawnBordersPosition.y);
         return x;
     }
 }

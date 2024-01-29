@@ -11,6 +11,7 @@ public class ShootingState : BaseState<GunStateMachine.GunStates>
     private bool _canShoot = true;
     private bool _isOnShootingState = false;
     private Gun _gun; // also used for MonoBehevior methods
+    private Vector3 _sprededAndPoint;
 
 
     public ShootingState(GunStateMachine.GunStates stateKey, Gun gun, CharacterActions inputActions) : base(stateKey)
@@ -51,29 +52,29 @@ public class ShootingState : BaseState<GunStateMachine.GunStates>
 
     private void Shoot()
     {
+        CalculateSprededPoint(_gun.RawEndPoint.position);
         Ray ray = CreateRay();
         if (Physics.Raycast(ray, out RaycastHit hit, 100, _gun.HitableLayer))
         {
-            _gun.GunParticles.ActivateTrailParticles(hit);
             hit.transform.TryGetComponent(out IShootable shootableObject);
             shootableObject?.Attacked(_gun.GunDamage);
             _gun.GunParticles.ActivateHitParticles(hit);
         }
 
         // ---- Visual and Audio effects ---- //
+        _gun.GunParticles.ActivateTrailParticles(_sprededAndPoint);
         _gun.MainPlayerController.AnimateShoot();
         _gun.GunParticles.ActivateParticlesAfterShoot();
         PlayShootAudio();
 
 
+        _gun.BulletAmmount--;
+        _canShoot = false;
         if (_gun.BulletAmmount == 0 && !IsTransitionStart)
         {
             IsTransitionStart = true;
             ChangeStateAction.Invoke(GunStateMachine.GunStates.Reloading);
         }
-
-        _gun.BulletAmmount--;
-        _canShoot = false;
     }
 
     private IEnumerator Shooting(float rateOfFire)
@@ -87,24 +88,21 @@ public class ShootingState : BaseState<GunStateMachine.GunStates>
             }
             else
                 yield return null;
-
         }
     }
 
     private Ray CreateRay()
     {
-        var direction = GetSprededPoint(_gun.RawEndPoint.position - _gun.RawSpawnPoint.position).normalized;
+        var direction = (_sprededAndPoint - _gun.RawSpawnPoint.position).normalized;
         Ray ray = new Ray(_gun.RawSpawnPoint.position, direction);
         Debug.DrawRay(_gun.RawSpawnPoint.position, direction * 150, Color.red, 2);
         return ray;
     }
-    private Vector3 GetSprededPoint(Vector3 direction)
+    private void CalculateSprededPoint(Vector3 point)
     {
-        direction.x = UnityEngine.Random.Range(direction.x - _gun.GunData.GunSpred.x, direction.x + _gun.GunData.GunSpred.x);
-        direction.y = UnityEngine.Random.Range(direction.y - _gun.GunData.GunSpred.y, direction.y + _gun.GunData.GunSpred.y);
-        direction.z = UnityEngine.Random.Range(direction.z - _gun.GunData.GunSpred.z, direction.z + _gun.GunData.GunSpred.z);
-
-        return direction;
+        _sprededAndPoint = point;
+        _sprededAndPoint.x = UnityEngine.Random.Range(_sprededAndPoint.x - _gun.GunData.GunSpred.x, _sprededAndPoint.x + _gun.GunData.GunSpred.x);
+        _sprededAndPoint.y = UnityEngine.Random.Range(_sprededAndPoint.y - _gun.GunData.GunSpred.y, _sprededAndPoint.y + _gun.GunData.GunSpred.y);
     }
     private void PlayShootAudio()
     {

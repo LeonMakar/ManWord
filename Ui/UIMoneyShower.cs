@@ -12,15 +12,9 @@ public class UIMoneyShower : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _moneyText;
     [SerializeField] private TextMeshProUGUI _goldText;
 
-    private void Awake()
+    public void Loading()
     {
-        YandexGame.GetDataEvent += Initialize;
-    }
-    private void Initialize()
-    {
-        Debug.Log("Вызвов сработал");
         Money = YandexGame.savesData.Money;
-        ChangeText();
     }
     public void AddMoney(int money)
     {
@@ -31,7 +25,7 @@ public class UIMoneyShower : MonoBehaviour
         }
     }
 
-    private void ChangeText()
+    public void ChangeText()
     {
         _moneyText.text = Money.ToString();
     }

@@ -12,6 +12,6 @@ public abstract class InteractibleObjects : MonoBehaviour
     /// </summary>
     public virtual void Update()
     {
-        ParentObject.transform.Translate(Vector3.back * _speed * Time.deltaTime);
+        ParentObject.transform.Translate(Vector3.forward * _speed * Time.deltaTime);
     }
 }

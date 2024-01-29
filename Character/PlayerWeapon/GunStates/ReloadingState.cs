@@ -28,6 +28,7 @@ public class ReloadingState : BaseState<GunStateMachine.GunStates>
     private IEnumerator Reloading()
     {
         _gun.AudioSource.PlayOneShot(_gun.GunData.ReloadingSound);
+        _gun.MainPlayerController.AnimateReload();
         yield return new WaitForSeconds(_gun.ReloadingTime);
         _gun.BulletAmmount = _gun.MaxBulletAmmount;
         ChangeStateAction.Invoke(GunStateMachine.GunStates.Shooting);

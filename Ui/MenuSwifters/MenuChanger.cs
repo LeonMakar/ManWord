@@ -10,7 +10,7 @@ public class MenuChanger : MonoBehaviour
     [SerializeField] private Canvas _canvasToDisable;
     [SerializeField] private Canvas _canvasToEnable;
     private EventBus _eventBus;
-    private float _cameraTransitionDuration = 2f;
+    [SerializeField] private float _cameraTransitionDuration = 2f;
     private GameObject _playerGameObject;
 
     [Inject]
@@ -33,10 +33,7 @@ public class MenuChanger : MonoBehaviour
     {
         _cameraStart.Priority--;
         _cameraFinish.Priority = 15;
-        _playerGameObject.SetActive(true);
         StartCoroutine(WaitCameraChangeTransition(_cameraTransitionDuration));
-
-        _eventBus.Invoke(new StartGameSignal(true));
     }
 
     private IEnumerator WaitCameraChangeTransition(float transitionDuration)

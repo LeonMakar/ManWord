@@ -4,10 +4,9 @@ using Zenject;
 
 public class WeaponSaveData : MonoBehaviour
 {
-    [field: SerializeField] public List<GunData> ByedWeapon { get; private set; } = new List<GunData>();
-    [field: SerializeField] public List<GunData> NonByedWeapon { get; private set; } = new List<GunData>();
-
-    [SerializeField] private GunData _defoltGun;
+    public List<GunData> ByedWeapon  = new List<GunData>();
+    public List<GunData> NonByedWeapon  = new List<GunData>();
+    public GunData DefoltGun;
 
     private Gun _gun;
 
@@ -15,7 +14,7 @@ public class WeaponSaveData : MonoBehaviour
     private void Construct(Gun gun)
     {
         _gun = gun;
-        _gun.EqipeNewGun(_defoltGun);
+        _gun.EqipeNewGun(DefoltGun);
     }
     public void ByingWeapon(GunData weaponData)
     {
@@ -27,6 +26,6 @@ public class WeaponSaveData : MonoBehaviour
     public void SetNewDefaultGun(GunData weaponData)
     {
         _gun.EqipeNewGun(weaponData);
-        _defoltGun = weaponData;
+        DefoltGun = weaponData;
     }
 }

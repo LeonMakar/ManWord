@@ -1,9 +1,10 @@
 using UnityEngine;
 using Zenject;
 
-public class EnemyPoolInitialization : MonoBehaviour
+public class PoolInitialization : MonoBehaviour
 {
-    [SerializeField] EnemyPool _enemyPool;
+    [SerializeField] private EnemyPool _enemyPool;
+    [SerializeField] private BonusePool _bonusPool;
 
     private IFactory enemyFactory;
 
@@ -16,5 +17,6 @@ public class EnemyPoolInitialization : MonoBehaviour
     private void Start()
     {
         _enemyPool.Initialize(enemyFactory);
+        _bonusPool.Initialize();
     }
 }

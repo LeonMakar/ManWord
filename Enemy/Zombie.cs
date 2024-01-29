@@ -82,6 +82,7 @@ public abstract class Zombie : MonoBehaviour
         {
             rigidbody.isKinematic = boolian;
         }
+
     }
     #endregion
 
@@ -145,6 +146,7 @@ public abstract class Zombie : MonoBehaviour
 
     #endregion
 
+
     public void GetDamage(int damageValue)
     {
         if (Health - damageValue > 0)
@@ -158,13 +160,6 @@ public abstract class Zombie : MonoBehaviour
     private void Deading()
     {
         Health = 0;
-        if (Time.timeScale < 1)
-        {
-            Debug.Log(_player);
-            Debug.Log(_player.AimCamera);
-            _player.AimCamera.Follow = _gun.GunParticles.TrailGameObject.transform;
-
-        }
         _animator.SetTrigger(_isDied);
         _moneyShower.AddMoney(HoldedMoney);
     }

@@ -54,28 +54,28 @@ public class GunParticles : MonoBehaviour
         particle.gameObject.SetActive(false);
     }
 
-    public void ActivateTrailParticles(RaycastHit hit)
+    public void ActivateTrailParticles(Vector3 hitPosition)
     {
-        StartCoroutine(StartFrowTrail(hit));
+        StartCoroutine(StartFrowTrail(hitPosition));
     }
 
-    private IEnumerator StartFrowTrail(RaycastHit hit)
+    private IEnumerator StartFrowTrail(Vector3 hitPosition)
     {
         Vector3 startPoint = ShootParticle.transform.position + transform.TransformDirection(Vector3.forward);
-        Vector3 finishPoint = hit.point;
+        Vector3 finishPoint = hitPosition;
         float distance = Vector3.Distance(startPoint, finishPoint);
         float remeningDistance = distance;
-        TrailGameObject = _gunTrailPool.GetFromPool();
-        TrailGameObject.transform.position = startPoint;
-        TrailGameObject.transform.rotation = Quaternion.LookRotation(finishPoint - startPoint);
+        GameObject traailGameObject = _gunTrailPool.GetFromPool();
+        traailGameObject.transform.position = startPoint;
+        traailGameObject.transform.rotation = Quaternion.LookRotation(finishPoint - startPoint);
         while (remeningDistance > 0)
         {
             var trailPos = Vector3.Lerp(startPoint, finishPoint, 1 - (remeningDistance / distance));
-            TrailGameObject.transform.position = trailPos;
+            traailGameObject.transform.position = trailPos;
             remeningDistance -= _trailSpeed * Time.deltaTime;
             yield return null;
         }
-        TrailGameObject.SetActive(false);
+        traailGameObject.SetActive(false);
     }
 }
 

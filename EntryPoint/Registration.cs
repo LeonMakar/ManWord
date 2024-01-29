@@ -14,8 +14,6 @@ public class Registration : MonoBehaviour
     [SerializeField] Spawner _spawner;
     
 
-    private IContainer _mainContainer = new Container();
-    private Injector _injector;
     private CharacterActions _inputActions;
 
 

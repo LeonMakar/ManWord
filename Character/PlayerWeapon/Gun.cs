@@ -15,7 +15,6 @@ public class Gun : MonoBehaviour
 
 
     // -------------- Gun perfomance ------------------//
-    public Vector3 GunSpred { get; private set; }
     public float RateOfFire { get; private set; }
     public int GunDamage { get; private set; }
     public int BulletAmmount { get; set; }
@@ -57,11 +56,11 @@ public class Gun : MonoBehaviour
         CharacterActions = inputActions;
         _eventBus = eventBus;
         _eventBus.Subscrube<StartGameSignal>(GameIsStarted);
+        _gunStateMachine.InitStateMachine(this, CharacterActions);
     }
 
     private void SynchronizeWeaponeData()
     {
-        GunSpred = GunData.GunSpred;
         RateOfFire = GunData.RateOfFire;
         GunDamage = GunData.Damage;
         MaxBulletAmmount = GunData.BulletAmmount;
@@ -70,7 +69,10 @@ public class Gun : MonoBehaviour
 
         CreateWeaponPrefab();
     }
-
+    private void OnEnable()
+    {
+        _gunStateMachine.StartStateMachine();
+    }
     private void InitializeGunParticles(GameObject weaponPrefab)
     {
         weaponPrefab.TryGetComponent(out GunParticlesPlace particlePlaces);
@@ -97,7 +99,7 @@ public class Gun : MonoBehaviour
     public void EqipeNewGun(GunData gun)
     {
         GunData = gun;
-
+        MainPlayerController.SetAnimatorControllerForGun(GunData.AnimatorController);
         SynchronizeWeaponeData();
     }
 
@@ -106,8 +108,6 @@ public class Gun : MonoBehaviour
     private void GameIsStarted(StartGameSignal signal)
     {
         IsGameStarted = signal.GameIsStarted;
-        _gunStateMachine.InitStateMachine(this, CharacterActions);
-
     }
 
 

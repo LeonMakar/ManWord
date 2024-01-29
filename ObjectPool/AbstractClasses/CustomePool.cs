@@ -22,7 +22,14 @@ public class CustomePool<T> where T : MonoBehaviour
             _gameObjcetsList.Add(prefabGameObject.GetComponent<T>());
         }
     }
-
+    public void RemooveAllObject()
+    {
+        var gameObjecs = _gameObjcetsList.FindAll(x => x.isActiveAndEnabled);
+        foreach (var gameObj in gameObjecs)
+        {
+            DropBackToPool(gameObj);
+        }
+    }
 
     public T GetFromPool()
     {

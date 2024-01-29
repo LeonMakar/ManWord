@@ -14,4 +14,11 @@ public class EnemyPool : ScriptableObject
     {
         _simpleZombyPool = new CustomePool<SimpleZomby>(enemyFactory, 10);
     }
+
+
+
+    public void RemooveAllEnemyFromScene()
+    {
+        _simpleZombyPool.RemooveAllObject();
+    }
 }

@@ -8,13 +8,15 @@ public class DoubleDamageBonus : InteractibleObjects
     [SerializeField] private MeshRenderer _meshRenderer;
     private void OnTriggerEnter(Collider other)
     {
-        other.transform.TryGetComponent(out MainPlayerController controller);
-        if (controller != null)
-            StartCoroutine(TimingBonusDuration(_bonusDuration, controller.Gun));
+        if (other.tag == GameConstans.PlayerTag)
+        {
+            other.transform.TryGetComponent(out MainPlayerController controller);
+            if (controller != null)
+                StartCoroutine(TimingBonusDuration(_bonusDuration, controller.Gun));
 
-        _meshedObject.gameObject.TryGetComponent(out MeshRenderer mesh);
-        _meshRenderer.enabled = false;
-
+            _meshedObject.gameObject.TryGetComponent(out MeshRenderer mesh);
+            _meshRenderer.enabled = false;
+        }
     }
     public override void Update()
     {
@@ -26,6 +28,7 @@ public class DoubleDamageBonus : InteractibleObjects
         gun.SetGunDamage(gun.GunDamage * 2);
         yield return new WaitForSeconds(duration);
         gun.SetGunDamage(gun.GunDamage / 2);
-        Destroy(ParentObject.gameObject);
+        _meshRenderer.enabled = true;
+        ParentObject.gameObject.SetActive(false);
     }
 }

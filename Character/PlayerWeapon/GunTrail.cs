@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class GunTrail : MonoBehaviour, IService
+public class GunTrail : MonoBehaviour
 {
     [SerializeField] TrailRenderer _trail;
     private Vector3 _shootPoint;

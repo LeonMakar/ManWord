@@ -3,19 +3,19 @@ using Zenject;
 
 public class GameOverTrigger : MonoBehaviour
 {
-    private EventBus _eventBus;
+    private GameStateMachine _gameStateMachine;
 
     [Inject]
-    private void Construct(EventBus eventBus)
+    private void Construct(GameStateMachine gameStateMachine)
     {
-        _eventBus = eventBus;
+        _gameStateMachine = gameStateMachine;
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "Enemy")
+        if (other.gameObject.tag == GameConstans.EnemyTag)
         {
-            _eventBus.Invoke<GameOverSignal>(new GameOverSignal(true));
+            _gameStateMachine.TransitToGameOverState();
         }
     }
 }

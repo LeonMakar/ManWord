@@ -1,4 +1,6 @@
 ﻿
+using System.Collections.Generic;
+
 namespace YG
 {
     [System.Serializable]
@@ -14,14 +16,18 @@ namespace YG
 
         // Ваши сохранения
 
-        public int Money = 13;
+        public int Money = 0;
+
+        public bool IsFirstSwitchingOn;
+        public GunData DefoltGun;
+        public List<GunData> NonByedGuns;
+        public List<GunData> ByedGuns;
 
 
-
-        // Вы можете выполнить какие то действия при загрузке сохранений
         public SavesYG()
         {
-            Money = 13;
+            Money = 0;
+            IsFirstSwitchingOn = true;
         }
     }
 }

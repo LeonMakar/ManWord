@@ -10,8 +10,11 @@ public class MainSceneInstaller : MonoInstaller, IInitializable
     [SerializeField] private GunTrail _gunTrail;
     [SerializeField] private HealthBar _healthBar;
     [SerializeField] private EnemyPool _enemyPool;
+    [SerializeField] private BonusePool _bonusPool;
     [SerializeField] private WeaponSaveData _weaponSaveData;
     [SerializeField] private UIMoneyShower _moneyShower;
+    [SerializeField] private GameStateMachine _gameStateMachine;
+    [SerializeField] private SaveAndLoadProcess _saveAndLoadProcess;
 
     public override void InstallBindings()
     {
@@ -23,11 +26,40 @@ public class MainSceneInstaller : MonoInstaller, IInitializable
         BindGunTrailRenderer();
         BindHealthBar();
         BindEnemyPool();
+        BindBonusPool();
         BindEnemyFactory();
         BindWeaponSaveData();
         BindMoneyShower();
+        BindGameStateMachine();
+        BindSaveAndLoadPrecess();
     }
 
+    private void BindBonusPool()
+    {
+        Container
+            .Bind<BonusePool>()
+            .FromInstance(_bonusPool)
+            .AsSingle()
+            .NonLazy();
+    }
+
+    private void BindSaveAndLoadPrecess()
+    {
+        Container
+            .Bind<SaveAndLoadProcess>()
+            .FromInstance(_saveAndLoadProcess)
+            .AsSingle()
+            .NonLazy();
+    }
+
+    private void BindGameStateMachine()
+    {
+        Container
+            .Bind<GameStateMachine>()
+            .FromInstance(_gameStateMachine)
+            .AsSingle()
+            .NonLazy();
+    }
     private void BindMoneyShower()
     {
         Container

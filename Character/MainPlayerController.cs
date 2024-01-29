@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
+using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Networking.PlayerConnection;
@@ -26,24 +27,27 @@ public class MainPlayerController : MonoBehaviour, IPlayer
 
     private CharacterActions _inputActions;
     private Gun _gun;
+    public UIMoneyShower Money {  get; private set; }
     private int _isMooving;
     private int _mooveValue;
     private int _shootTrigger;
+    private int _reloadingTrigger;
 
     public Gun Gun => _gun;
 
 
     [Inject]
-    private void Construct(CharacterActions inputActions, Gun gun)
+    private void Construct(CharacterActions inputActions, Gun gun,UIMoneyShower money)
     {
         _inputActions = inputActions;
         _gun = gun;
+        Money = money;
 
         _inputActions.Default.Enable();
         _inputActions.Default.Aiming.performed += StartAiming;
 
         _shootTrigger = Animator.StringToHash("Shoot");
-
+        _reloadingTrigger = Animator.StringToHash("Reload");
         InitStateMachine();
     }
 
@@ -52,10 +56,9 @@ public class MainPlayerController : MonoBehaviour, IPlayer
         _playerStateMachine.InitStateMachine(_inputActions, _gun, _rigAnimator, _animator, _characterController, _speed);
     }
 
-    public void AnimateShoot()
-    {
-        _animator.SetTrigger(_shootTrigger);
-    }
+    public void AnimateShoot() => _animator.SetTrigger(_shootTrigger);
+    public void AnimateReload() => _animator.SetTrigger(_reloadingTrigger);
+    public void SetAnimatorControllerForGun(AnimatorController controller) => _animator.runtimeAnimatorController = controller;
 
     private void StartAiming(InputAction.CallbackContext context)
     {
@@ -68,13 +71,18 @@ public class MainPlayerController : MonoBehaviour, IPlayer
         AimCamera.Priority = 15;
         StartCoroutine(StartAimingTimer(aimingBonusTime));
         Time.timeScale = 0.5f;
+
     }
 
     private IEnumerator StartAimingTimer(float aimingTime)
     {
+
+        var saveSpred = _gun.GunData.GunSpred;
+        _gun.GunData.GunSpred = Vector2.zero;
         yield return new WaitForSeconds(aimingTime);
         AimCamera.Priority = 9;
         Time.timeScale = 1;
+        _gun.GunData.GunSpred = saveSpred;
     }
 
     private void Rotation()
