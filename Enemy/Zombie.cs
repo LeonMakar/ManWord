@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using Zenject;
 
@@ -46,6 +48,7 @@ public abstract class Zombie : MonoBehaviour
     //----------Animator parameters fields----------//
     private int _isHited;
     private int _isDied;
+    private int _isStandUp;
 
     #region Initialization
     [Inject]
@@ -60,6 +63,7 @@ public abstract class Zombie : MonoBehaviour
     {
         _isHited = Animator.StringToHash("Hit");
         _isDied = Animator.StringToHash("isDead");
+        _isStandUp = Animator.StringToHash("StandUp");
         CalculateMoneyHolding();
     }
     #endregion
@@ -82,7 +86,25 @@ public abstract class Zombie : MonoBehaviour
         {
             rigidbody.isKinematic = boolian;
         }
+        StartCoroutine(StandUp());
+    }
 
+    private IEnumerator StandUp()
+    {
+        yield return new WaitForSeconds(5);
+        _animator.enabled = true;
+        foreach (var rigidbody in _bodies)
+        {
+            rigidbody.isKinematic = true;
+        }
+        if (Health > 0)
+            _animator.SetTrigger(_isStandUp);
+        else
+        {
+            Health = 0;
+            _moneyShower.AddMoney(HoldedMoney);
+            DethActions();
+        }
     }
     #endregion
 
@@ -108,7 +130,7 @@ public abstract class Zombie : MonoBehaviour
     }
     private void CalculateMoneyHolding()
     {
-        HoldedMoney = Random.Range(BaseMoneyToDrop - MoneyRandomizingRange, BaseMoneyToDrop + MoneyRandomizingRange);
+        HoldedMoney = UnityEngine.Random.Range(BaseMoneyToDrop - MoneyRandomizingRange, BaseMoneyToDrop + MoneyRandomizingRange);
     }
     public void ResetAllParameters()
     {

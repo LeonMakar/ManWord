@@ -292,8 +292,13 @@ public class WeaponChooser : MonoBehaviour
     {
         yield return new WaitForSeconds(1.2f);
         Destroy(_oldWeapon);
-        _oldWeapon = _weaponsMemmoryList.Last();
-        _weaponsMemmoryList.Remove(_weaponsMemmoryList.Last());
+        if (_weaponsMemmoryList.Count > 0)
+        {
+            _oldWeapon = _weaponsMemmoryList.Last();
+            _weaponsMemmoryList.Remove(_weaponsMemmoryList.Last());
+        }
+        else
+            _oldWeapon = null;
     }
 
 

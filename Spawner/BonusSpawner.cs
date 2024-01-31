@@ -8,6 +8,8 @@ public class BonusSpawner : Spawner
     [SerializeField] private ChanceRange _chanceOfAiming;
     [SerializeField] private ChanceRange _chanceOfDoubleDamage;
     [SerializeField] private ChanceRange _chanceOfMoney;
+    [SerializeField] private ChanceRange _chanceOfBombing;
+
 
     private BonusePool _bonusPool;
     private GameObject _spawnObject;
@@ -37,6 +39,8 @@ public class BonusSpawner : Spawner
                     _spawnObject = _bonusPool.GetDoubleDamagePool().GetFromPool().gameObject;
                 if (chance >= _chanceOfMoney.start && chance < _chanceOfMoney.end)
                     _spawnObject = _bonusPool.GetMoneyPool().GetFromPool().gameObject;
+                if (chance >= _chanceOfBombing.start && chance < _chanceOfBombing.end)
+                    _spawnObject = _bonusPool.GetBombingPool().GetFromPool().gameObject;
 
                 _spawnObject.gameObject.SetActive(false);
                 _spawnObject.transform.position = new Vector3(x, _spawnObject.transform.position.y, transform.position.z);

@@ -36,6 +36,7 @@ public class SaveAndLoadProcess : MonoBehaviour
         _money.Loading();
         if (!YandexGame.savesData.IsFirstSwitchingOn)
             LoadGunShopAssortment();
+        _weaponSaveData.Loading();
     }
 
     private void LoadGunShopAssortment()
