@@ -8,6 +8,8 @@ public class GameStateMachine : StateManager<GameStateMachine.GameStates>
     [SerializeField] private Canvas _gameOverCanvas;
     [SerializeField] private Spawner _enemySpawner;
     [SerializeField] private Spawner _bonusSpawner;
+    [SerializeField] private Spawner _obstacleSpawner;
+
 
     [SerializeField] private GameObject _playerGameObject;
     [SerializeField] private GameObject[] _menuZombie;
@@ -23,7 +25,7 @@ public class GameStateMachine : StateManager<GameStateMachine.GameStates>
     private void Cunstruct(EventBus eventBus, EnemyPool enemyPool, SaveAndLoadProcess saveAndLoad, UIMoneyShower uIMoneyShower, BonusePool bonusePool)
     {
         GameIsActiveState gameIsActiveState = new GameIsActiveState(GameStates.GameIsActive, _gamePlayCanvas, _enemySpawner,
-            _playerGameObject, eventBus, _menuZombie, enemyPool, uIMoneyShower, _bonusSpawner, bonusePool);
+            _playerGameObject, eventBus, _menuZombie, enemyPool, uIMoneyShower, _bonusSpawner, bonusePool, _obstacleSpawner);
 
         GameIsOverState gameIsOverState = new GameIsOverState(GameStates.GameIsOver, _gameOverCanvas, saveAndLoad);
 

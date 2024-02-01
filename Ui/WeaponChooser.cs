@@ -4,9 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 using UnityEngine.UI;
-using YG;
 using Zenject;
 
 public class WeaponChooser : MonoBehaviour
@@ -30,7 +28,7 @@ public class WeaponChooser : MonoBehaviour
 
 
     [Space(20)]
-    [SerializeField] List<GunData> _weaponsData = new List<GunData>();
+    [field:SerializeField] public List<GunData> WeaponsData = new List<GunData>();
     [SerializeField] Transform _weaponStartPosition;
     [SerializeField] Transform _weaponFinishPosition;
     [SerializeField] Transform _weaponFarAwayPosition;
@@ -39,7 +37,7 @@ public class WeaponChooser : MonoBehaviour
 
     [SerializeField] private float _swiftSpeed;
 
-    [SerializeField] private TextMeshProUGUI _moneyText;
+    [field: SerializeField] public TextMeshProUGUI MoneyText { get; private set; }
 
 
     public GunData _choosenGun { get; private set; }
@@ -47,7 +45,7 @@ public class WeaponChooser : MonoBehaviour
     private GameObject _oldWeapon;
     private GameObject _newWeapon;
     private List<GameObject> _weaponsMemmoryList = new List<GameObject>();
-    private int _queuePosition;
+    public int QueuePosition {  get; private set; }
     private float _time;
     private Gun _gun;
     private WeaponSaveData _weaponSaveData;
@@ -71,7 +69,7 @@ public class WeaponChooser : MonoBehaviour
 
     public void ChangeToNextWeapon()
     {
-        if (_queuePosition < _weaponsData.Count && !_isSwiping)
+        if (QueuePosition < WeaponsData.Count && !_isSwiping)
         {
             _isSwiping = true;
             if (_newWeapon != null)
@@ -81,16 +79,16 @@ public class WeaponChooser : MonoBehaviour
                 _oldWeapon = _newWeapon;
                 StartCoroutine(MooveWeapon(_weaponFinishPosition, _weaponFarAwayPosition, _oldWeapon));
             }
-            _newWeapon = Instantiate(_weaponsData[_queuePosition].GunPrefab, _parentObject);
+            _newWeapon = Instantiate(WeaponsData[QueuePosition].GunPrefab, _parentObject);
             _newWeapon.transform.position = _weaponStartPosition.position;
             _newWeapon.transform.rotation = _objectToCopieRotation.rotation;
             StartCoroutine(MooveWeapon(_weaponStartPosition, _weaponFinishPosition, _newWeapon));
-            if (_queuePosition != 0)
+            if (QueuePosition != 0)
                 Swipe.Invoke();
-            _queuePosition++;
+            QueuePosition++;
             ChangeParametersText();
         }
-        else if (_queuePosition == _weaponsData.Count && !_isSwiping)
+        else if (QueuePosition == WeaponsData.Count && !_isSwiping)
         {
             if (_newWeapon != null)
             {
@@ -101,7 +99,7 @@ public class WeaponChooser : MonoBehaviour
                 _oldWeapon = _newWeapon;
                 StartCoroutine(MooveWeapon(_weaponFinishPosition, _weaponFarAwayPosition, _oldWeapon));
                 _newWeapon = null;
-                _queuePosition++;
+                QueuePosition++;
             }
             _allGunParameters.SetActive(false);
 
@@ -110,7 +108,7 @@ public class WeaponChooser : MonoBehaviour
     public void ChangeToNextWeapon(bool doIDeleteByuedGun)
     {
 
-        if (_queuePosition < _weaponsData.Count && !_isSwiping)
+        if (QueuePosition < WeaponsData.Count && !_isSwiping)
         {
             _isSwiping = true;
             if (_newWeapon != null)
@@ -120,17 +118,17 @@ public class WeaponChooser : MonoBehaviour
                 _oldWeapon = _newWeapon;
                 StartCoroutine(MooveWeapon(_weaponFinishPosition, _weaponFarAwayPosition, _oldWeapon));
             }
-            _newWeapon = Instantiate(_weaponsData[_queuePosition].GunPrefab, _parentObject);
+            _newWeapon = Instantiate(WeaponsData[QueuePosition].GunPrefab, _parentObject);
             _newWeapon.transform.position = _weaponStartPosition.position;
             _newWeapon.transform.rotation = _objectToCopieRotation.rotation;
             StartCoroutine(MooveWeapon(_weaponStartPosition, _weaponFinishPosition, _newWeapon));
-            if (_queuePosition != 0)
+            if (QueuePosition != 0)
                 Swipe.Invoke();
-            _queuePosition++;
+            QueuePosition++;
             ChangeParametersText();
             _deleteGun.Invoke(doIDeleteByuedGun);
         }
-        else if (_queuePosition == _weaponsData.Count && !_isSwiping)
+        else if (QueuePosition == WeaponsData.Count && !_isSwiping)
         {
             if (_newWeapon != null)
             {
@@ -140,7 +138,7 @@ public class WeaponChooser : MonoBehaviour
                     _weaponsMemmoryList.Add(_oldWeapon);
                 _oldWeapon = _newWeapon;
                 StartCoroutine(MooveWeapon(_weaponFinishPosition, _weaponFarAwayPosition, _oldWeapon));
-                _queuePosition++;
+                QueuePosition++;
 
                 _deleteGun.Invoke(doIDeleteByuedGun);
             }
@@ -149,7 +147,7 @@ public class WeaponChooser : MonoBehaviour
     }
     public void ChangeToPreviousWeapon()
     {
-        if (_queuePosition > 1)
+        if (QueuePosition > 1)
             if (_newWeapon != null && !_isSwiping)
             {
                 _isSwiping = true;
@@ -172,7 +170,7 @@ public class WeaponChooser : MonoBehaviour
                     _weaponsMemmoryList.Remove(_weaponsMemmoryList.Last());
                     _newWeapon = _oldWeapon;
                 }
-                _queuePosition--;
+                QueuePosition--;
                 ChangeParametersText();
                 Swipe.Invoke();
             }
@@ -191,7 +189,7 @@ public class WeaponChooser : MonoBehaviour
                     }
                     else
                         _oldWeapon = null;
-                    _queuePosition--;
+                    QueuePosition--;
                     ChangeParametersText();
                     Swipe.Invoke();
                 }
@@ -227,33 +225,33 @@ public class WeaponChooser : MonoBehaviour
     }
     private void ChangeParametersText()
     {
-        _damageText.text = _weaponsData[_queuePosition - 1].Damage.ToString();
-        _fireRateText.text = _weaponsData[_queuePosition - 1].RateOfFire.ToString();
-        _accuranceText.text = _weaponsData[_queuePosition - 1].GunSpred.ToString();
-        _ammoText.text = _weaponsData[_queuePosition - 1].BulletAmmount.ToString();
-        _reloadingText.text = _weaponsData[_queuePosition - 1].ReloadingTime.ToString() + " sec";
-        _costText.text = _weaponsData[_queuePosition - 1].GunCoast.ToString();
-        _weaponNameText.text = _weaponsData[_queuePosition - 1].GunName.ToString();
+        _damageText.text = WeaponsData[QueuePosition - 1].Damage.ToString();
+        _fireRateText.text = WeaponsData[QueuePosition - 1].RateOfFire.ToString();
+        _accuranceText.text = WeaponsData[QueuePosition - 1].GunSpred.ToString();
+        _ammoText.text = WeaponsData[QueuePosition - 1].BulletAmmount.ToString();
+        _reloadingText.text = WeaponsData[QueuePosition - 1].ReloadingTime.ToString() + " sec";
+        _costText.text = WeaponsData[QueuePosition - 1].GunCoast.ToString();
+        _weaponNameText.text = WeaponsData[QueuePosition - 1].GunName.ToString();
     }
     #endregion
 
     #region Initialization  
     public void SetMenuAsByingMenu()
     {
-        _weaponsData = _weaponSaveData.NonByedWeapon;
+        WeaponsData = _weaponSaveData.NonByedWeapon;
         _buyAndSelectButtone.onClick.RemoveAllListeners();
         _buyAndSelectButtone.onClick.AddListener(BuyWeapon);
         _buyAndSelectButtoneText.text = "Buy";
-        _moneyText.text = _moneyShower.Money.ToString();
+        MoneyText.text = _moneyShower.Money.ToString();
 
     }
     public void SetMenuAsSelectingMenu()
     {
-        _weaponsData = _weaponSaveData.ByedWeapon;
+        WeaponsData = _weaponSaveData.ByedWeapon;
         _buyAndSelectButtone.onClick.RemoveAllListeners();
         _buyAndSelectButtone.onClick.AddListener(SelectWeapone);
         _buyAndSelectButtoneText.text = "Select";
-        _moneyText.text = _moneyShower.Money.ToString();
+        MoneyText.text = _moneyShower.Money.ToString();
     }
     #endregion
 
@@ -270,17 +268,17 @@ public class WeaponChooser : MonoBehaviour
             Destroy(_oldWeapon.gameObject);
         _newWeapon = null;
         _oldWeapon = null;
-        _queuePosition = 0;
+        QueuePosition = 0;
     }
     public void SelectWeapone()
     {
-        _gun.EqipeNewGun(_weaponsData[_queuePosition - 1]);
-        _weaponSaveData.SetNewDefaultGun(_weaponsData[_queuePosition - 1]);
+        _gun.EqipeNewGun(WeaponsData[QueuePosition - 1]);
+        _weaponSaveData.SetNewDefaultGun(WeaponsData[QueuePosition - 1]);
     }
     public void BuyWeapon()
     {
-        _weaponSaveData.ByingWeapon(_weaponsData[_queuePosition - 1]);
-        _queuePosition--;
+        _weaponSaveData.ByingWeapon(WeaponsData[QueuePosition - 1]);
+        QueuePosition--;
         ChangeToNextWeapon(true);
     }
     private void DeleteGunFromList(bool boolian)

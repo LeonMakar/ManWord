@@ -47,9 +47,11 @@ public class Gun : MonoBehaviour
     public bool TargetIsFinded { get; private set; }
 
     private GameObject _gunPrefab;
+    private WeaponSaveData _weaponSaveData;
+
     #region Initialization
     [Inject]
-    private void Construct(MainPlayerController mainPlayerController, GunTrail gunTrail, EventBus eventBus, CharacterActions inputActions)
+    private void Construct(MainPlayerController mainPlayerController, GunTrail gunTrail, EventBus eventBus, CharacterActions inputActions,WeaponSaveData weaponSaveData)
     {
         MainPlayerController = mainPlayerController;
         GunTrail = gunTrail;
@@ -57,6 +59,7 @@ public class Gun : MonoBehaviour
         _eventBus = eventBus;
         _eventBus.Subscrube<StartGameSignal>(GameIsStarted);
         _gunStateMachine.InitStateMachine(this, CharacterActions);
+        _weaponSaveData = weaponSaveData;
     }
 
     private void SynchronizeWeaponeData()
@@ -108,6 +111,7 @@ public class Gun : MonoBehaviour
     private void GameIsStarted(StartGameSignal signal)
     {
         IsGameStarted = signal.GameIsStarted;
+        SynchronizeWeaponeData();
     }
 
 

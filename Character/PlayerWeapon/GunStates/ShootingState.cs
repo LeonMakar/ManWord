@@ -101,8 +101,8 @@ public class ShootingState : BaseState<GunStateMachine.GunStates>
     private void CalculateSprededPoint(Vector3 point)
     {
         _sprededAndPoint = point;
-        _sprededAndPoint.x = UnityEngine.Random.Range(_sprededAndPoint.x - _gun.GunData.GunSpred.x, _sprededAndPoint.x + _gun.GunData.GunSpred.x);
-        _sprededAndPoint.y = UnityEngine.Random.Range(_sprededAndPoint.y - _gun.GunData.GunSpred.y, _sprededAndPoint.y + _gun.GunData.GunSpred.y);
+        _sprededAndPoint.x = UnityEngine.Random.Range(_sprededAndPoint.x - _gun.GunData.GunSpred, _sprededAndPoint.x + _gun.GunData.GunSpred);
+        _sprededAndPoint.y = UnityEngine.Random.Range(_sprededAndPoint.y - _gun.GunData.GunSpred, _sprededAndPoint.y + _gun.GunData.GunSpred);
     }
     private void PlayShootAudio()
     {

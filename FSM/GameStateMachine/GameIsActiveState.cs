@@ -14,9 +14,10 @@ public class GameIsActiveState : BaseState<GameStateMachine.GameStates>
     private UIMoneyShower _uiMoney;
     private Spawner _bonusSpawner;
     private BonusePool _bonusPool;
+    private Spawner _obstacleSpawner;
 
     public GameIsActiveState(GameStateMachine.GameStates key, Canvas gamePlayCanvas, Spawner enemySpawner, GameObject playerGameObject,
-       EventBus eventBus, GameObject[] menuZombie, EnemyPool enemyPool, UIMoneyShower uiMoney, Spawner bonusSpawner, BonusePool bonusePool) : base(key)
+       EventBus eventBus, GameObject[] menuZombie, EnemyPool enemyPool, UIMoneyShower uiMoney, Spawner bonusSpawner, BonusePool bonusePool, Spawner obstacleSpawner) : base(key)
     {
         _gamePlayCanvas = gamePlayCanvas;
         _enemySpawner = enemySpawner;
@@ -26,8 +27,8 @@ public class GameIsActiveState : BaseState<GameStateMachine.GameStates>
         _enemyPool = enemyPool;
         _uiMoney = uiMoney;
         _bonusSpawner = bonusSpawner;
-
         _bonusPool = bonusePool;
+        _obstacleSpawner = obstacleSpawner;
     }
     public override void EnterToState()
     {
@@ -41,6 +42,8 @@ public class GameIsActiveState : BaseState<GameStateMachine.GameStates>
         _uiMoney.ChangeText();
         _bonusSpawner.SetGameActivity(true);
         _bonusSpawner.StartSpawning();
+        _obstacleSpawner.StartSpawning();
+        _obstacleSpawner.SetGameActivity(true);
     }
 
     public override void ExitFromState()
@@ -54,6 +57,8 @@ public class GameIsActiveState : BaseState<GameStateMachine.GameStates>
         _enemyPool.RemooveAllEnemyFromScene();
         _bonusSpawner.SetGameActivity(false);
         _bonusSpawner.StopAllCoroutines();
+        _obstacleSpawner.SetGameActivity(false);
+        _obstacleSpawner.StopAllCoroutines();
         _bonusPool.RemooveAllObjectFromScene();
     }
 

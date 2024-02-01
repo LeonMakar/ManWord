@@ -102,7 +102,7 @@ public abstract class Zombie : MonoBehaviour
         else
         {
             Health = 0;
-            _moneyShower.AddMoney(HoldedMoney);
+            _moneyShower.ChangeMoneyValue(HoldedMoney);
             DethActions();
         }
     }
@@ -183,7 +183,7 @@ public abstract class Zombie : MonoBehaviour
     {
         Health = 0;
         _animator.SetTrigger(_isDied);
-        _moneyShower.AddMoney(HoldedMoney);
+        _moneyShower.ChangeMoneyValue(HoldedMoney);
     }
     public void StoppingZoomingBulletTrail()
     {

@@ -10,7 +10,7 @@ public class MoneyBonus : InteractibleObjects
         {
             other.transform.TryGetComponent(out MainPlayerController controller);
             if (controller != null)
-                controller.Money.AddMoney(_moneyCount);
+                controller.Money.ChangeMoneyValue(_moneyCount);
             gameObject.SetActive(false);
         }
     }

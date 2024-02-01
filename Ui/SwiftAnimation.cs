@@ -16,7 +16,8 @@ public class SwiftAnimation : MonoBehaviour
     public void StartSwiftAnimation()
     {
         _startPos = _currentPosition.position;
-        StartCoroutine(Swifting());
+        if (gameObject.activeSelf)
+            StartCoroutine(Swifting());
     }
 
 

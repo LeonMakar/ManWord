@@ -46,13 +46,11 @@ public abstract class StateManager<EState> : MonoBehaviour where EState : Enum
     protected void OnTriggerExit(Collider other)
     {
         CurrentState.OnTriggerExit(other);
-
     }
 
     protected void OnTriggerStay(Collider other)
     {
         CurrentState.OnTriggerStay(other);
-
     }
 
 }

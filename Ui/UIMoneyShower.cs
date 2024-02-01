@@ -16,13 +16,11 @@ public class UIMoneyShower : MonoBehaviour
     {
         Money = YandexGame.savesData.Money;
     }
-    public void AddMoney(int money)
+    public void ChangeMoneyValue(int money)
     {
-        if (money > 0)
-        {
-            Money += money;
-            ChangeText();
-        }
+
+        Money += money;
+        ChangeText();
     }
 
     public void ChangeText()

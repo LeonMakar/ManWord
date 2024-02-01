@@ -19,9 +19,10 @@ namespace YG
         public int Money = 0;
 
         public bool IsFirstSwitchingOn;
-        public GunData DefoltGun;
-        public List<GunData> NonByedGuns;
-        public List<GunData> ByedGuns;
+        public GunDataSave DefoltGun;
+
+        public List<GunDataSave> NonByedGuns;
+        public List<GunDataSave> ByedGuns;
 
 
         public SavesYG()

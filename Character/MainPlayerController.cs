@@ -1,13 +1,9 @@
 using Cinemachine;
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography;
 using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Networking.PlayerConnection;
 using Zenject;
 
 public class MainPlayerController : MonoBehaviour, IPlayer
@@ -23,11 +19,11 @@ public class MainPlayerController : MonoBehaviour, IPlayer
 
     public CinemachineVirtualCamera AimCamera;
     public Transform AimCamTransform;
-
+    public GameStateMachine GameStateMachine { get; private set; }
 
     private CharacterActions _inputActions;
     private Gun _gun;
-    public UIMoneyShower Money {  get; private set; }
+    public UIMoneyShower Money { get; private set; }
     private int _isMooving;
     private int _mooveValue;
     private int _shootTrigger;
@@ -37,11 +33,12 @@ public class MainPlayerController : MonoBehaviour, IPlayer
 
 
     [Inject]
-    private void Construct(CharacterActions inputActions, Gun gun,UIMoneyShower money)
+    private void Construct(CharacterActions inputActions, Gun gun, UIMoneyShower money, GameStateMachine gameStateMachine)
     {
         _inputActions = inputActions;
         _gun = gun;
         Money = money;
+        GameStateMachine = gameStateMachine;
 
         _inputActions.Default.Enable();
         _inputActions.Default.Aiming.performed += StartAiming;
@@ -78,7 +75,7 @@ public class MainPlayerController : MonoBehaviour, IPlayer
     {
 
         var saveSpred = _gun.GunData.GunSpred;
-        _gun.GunData.GunSpred = Vector2.zero;
+        _gun.GunData.GunSpred = 0;
         yield return new WaitForSeconds(aimingTime);
         AimCamera.Priority = 9;
         Time.timeScale = 1;
