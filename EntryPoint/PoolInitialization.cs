@@ -6,17 +6,17 @@ public class PoolInitialization : MonoBehaviour
     [SerializeField] private EnemyPool _enemyPool;
     [SerializeField] private BonusePool _bonusPool;
 
-    private IFactory enemyFactory;
+    private IFactory _factory;
 
     [Inject]
-    public void Construct(IFactory simpleZombyFactory)
+    public void Construct(IFactory factory)
     {
-        enemyFactory = simpleZombyFactory;
-        enemyFactory.Load();
+        _factory = factory;
+        _factory.Load();
     }
     private void Start()
     {
-        _enemyPool.Initialize(enemyFactory);
+        _enemyPool.Initialize(_factory);
         _bonusPool.Initialize();
     }
 }

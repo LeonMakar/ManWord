@@ -4,11 +4,11 @@ using Zenject;
 
 public class BonusSpawner : Spawner
 {
-    [SerializeField] private ChanceRange _chanceOfExplosion;
-    [SerializeField] private ChanceRange _chanceOfAiming;
-    [SerializeField] private ChanceRange _chanceOfDoubleDamage;
-    [SerializeField] private ChanceRange _chanceOfMoney;
-    [SerializeField] private ChanceRange _chanceOfBombing;
+    [SerializeField] private ChanceRange ChanceOfExplosion;
+    [SerializeField] private ChanceRange ChanceOfAiming;
+    [SerializeField] private ChanceRange ChanceOfDoubleDamage;
+    [SerializeField] private ChanceRange ChanceOfMoney;
+    [SerializeField] private ChanceRange ChanceOfBombing;
 
 
     private BonusePool _bonusPool;
@@ -31,15 +31,15 @@ public class BonusSpawner : Spawner
                 int chance = UnityEngine.Random.Range(0, 100);
                 float x = RandomizeXPosition();
 
-                if (chance >= _chanceOfAiming.start && chance < _chanceOfAiming.end)
+                if (chance >= ChanceOfAiming.start && chance < ChanceOfAiming.end)
                     _spawnObject = _bonusPool.GetAimingBonusPool().GetFromPool().gameObject;
-                if (chance >= _chanceOfExplosion.start && chance < _chanceOfExplosion.end)
+                if (chance >= ChanceOfExplosion.start && chance < ChanceOfExplosion.end)
                     _spawnObject = _bonusPool.GetExpolisiveBonusPool().GetFromPool().gameObject;
-                if (chance >= _chanceOfDoubleDamage.start && chance < _chanceOfDoubleDamage.end)
+                if (chance >= ChanceOfDoubleDamage.start && chance < ChanceOfDoubleDamage.end)
                     _spawnObject = _bonusPool.GetDoubleDamagePool().GetFromPool().gameObject;
-                if (chance >= _chanceOfMoney.start && chance < _chanceOfMoney.end)
+                if (chance >= ChanceOfMoney.start && chance < ChanceOfMoney.end)
                     _spawnObject = _bonusPool.GetMoneyPool().GetFromPool().gameObject;
-                if (chance >= _chanceOfBombing.start && chance < _chanceOfBombing.end)
+                if (chance >= ChanceOfBombing.start && chance < ChanceOfBombing.end)
                     _spawnObject = _bonusPool.GetBombingPool().GetFromPool().gameObject;
 
                 _spawnObject.gameObject.SetActive(false);

@@ -6,21 +6,32 @@ using Zenject;
 
 public class CustomePool<T> where T : MonoBehaviour
 {
-    private T _prefab;
     private List<T> _gameObjcetsList;
     private IFactory _factory;
+    private bool _isEnemyPool;
 
 
-    public CustomePool(IFactory factory, int initObjectsCount)
+    public CustomePool(IFactory factory, int initObjectsCount, bool isEnemyPool)
     {
+        _isEnemyPool = isEnemyPool;
         _gameObjcetsList = new List<T>();
         _factory = factory;
         for (int i = 0; i < initObjectsCount; i++)
         {
-            var prefabGameObject = _factory.Create();
-            prefabGameObject.GameObject().SetActive(false);
-            _gameObjcetsList.Add(prefabGameObject.GetComponent<T>());
+            if (!_isEnemyPool)
+            {
+                var prefabGameObject = _factory.Create();
+                prefabGameObject.GameObject().SetActive(false);
+                _gameObjcetsList.Add(prefabGameObject.GetComponent<T>());
+            }
+            else
+            {
+                var prefabGameObject = _factory.Create<T>();
+                prefabGameObject.GameObject().SetActive(false);
+                _gameObjcetsList.Add(prefabGameObject.GetComponent<T>());
+            }
         }
+        _isEnemyPool = isEnemyPool;
     }
     public void RemooveAllObject()
     {
@@ -44,9 +55,20 @@ public class CustomePool<T> where T : MonoBehaviour
 
     private T CreateGameObjectForPool()
     {
-        var prefabGameObject = _factory.Create();
-        prefabGameObject.GameObject().SetActive(false);
-        _gameObjcetsList.Add(prefabGameObject.GetComponent<T>());
-        return prefabGameObject.GetComponent<T>();
+        if (!_isEnemyPool)
+        {
+            var prefabGameObject = _factory.Create();
+            prefabGameObject.GameObject().SetActive(false);
+            _gameObjcetsList.Add(prefabGameObject.GetComponent<T>());
+            return prefabGameObject.GetComponent<T>();
+
+        }
+        else
+        {
+            var prefabGameObject = _factory.Create<T>();
+            prefabGameObject.GameObject().SetActive(false);
+            _gameObjcetsList.Add(prefabGameObject.GetComponent<T>());
+            return prefabGameObject.GetComponent<T>();
+        }
     }
 }

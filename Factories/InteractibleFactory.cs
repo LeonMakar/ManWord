@@ -15,6 +15,11 @@ public class IntreractibleFactory<T> : IFactory where T : InteractibleObjects
         return gameObject;
     }
 
+    public Object Create<TZombieImplamentation>()
+    {
+        throw new System.NotImplementedException();
+    }
+
     public void Load()
     {
 

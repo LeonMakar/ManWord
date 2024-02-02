@@ -15,6 +15,7 @@ public class UIMoneyShower : MonoBehaviour
     public void Loading()
     {
         Money = YandexGame.savesData.Money;
+        ChangeMoneyValue(10000);
     }
     public void ChangeMoneyValue(int money)
     {

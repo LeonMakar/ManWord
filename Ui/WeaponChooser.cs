@@ -28,7 +28,7 @@ public class WeaponChooser : MonoBehaviour
 
 
     [Space(20)]
-    [field:SerializeField] public List<GunData> WeaponsData = new List<GunData>();
+    [field: SerializeField] public List<GunData> WeaponsData = new List<GunData>();
     [SerializeField] Transform _weaponStartPosition;
     [SerializeField] Transform _weaponFinishPosition;
     [SerializeField] Transform _weaponFarAwayPosition;
@@ -45,7 +45,7 @@ public class WeaponChooser : MonoBehaviour
     private GameObject _oldWeapon;
     private GameObject _newWeapon;
     private List<GameObject> _weaponsMemmoryList = new List<GameObject>();
-    public int QueuePosition {  get; private set; }
+    public int QueuePosition { get; private set; }
     private float _time;
     private Gun _gun;
     private WeaponSaveData _weaponSaveData;
@@ -226,10 +226,10 @@ public class WeaponChooser : MonoBehaviour
     private void ChangeParametersText()
     {
         _damageText.text = WeaponsData[QueuePosition - 1].Damage.ToString();
-        _fireRateText.text = WeaponsData[QueuePosition - 1].RateOfFire.ToString();
-        _accuranceText.text = WeaponsData[QueuePosition - 1].GunSpred.ToString();
+        _fireRateText.text = Math.Round(WeaponsData[QueuePosition - 1].RateOfFire, 2).ToString();
+        _accuranceText.text = Math.Round(WeaponsData[QueuePosition - 1].GunSpred, 2).ToString();
         _ammoText.text = WeaponsData[QueuePosition - 1].BulletAmmount.ToString();
-        _reloadingText.text = WeaponsData[QueuePosition - 1].ReloadingTime.ToString() + " sec";
+        _reloadingText.text = Math.Round(WeaponsData[QueuePosition - 1].ReloadingTime, 2).ToString() + " sec";
         _costText.text = WeaponsData[QueuePosition - 1].GunCoast.ToString();
         _weaponNameText.text = WeaponsData[QueuePosition - 1].GunName.ToString();
     }

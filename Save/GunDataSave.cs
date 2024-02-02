@@ -1,3 +1,5 @@
+using UnityEngine;
+
 [System.Serializable]
 public class GunDataSave
 {
@@ -14,6 +16,12 @@ public class GunDataSave
     public int AmmoUpgradeCost;
     public int ReloadingUpgradeCost;
 
+    public int DamageUpStep;
+    public int RateOfFireUpStep;
+    public int SpredUpStep;
+    public int AmmoUpStep;
+    public int ReloadingUpStep;
+
     public GunDataSave Init(GunData gunData)
     {
         GunName = gunData.GunName;
@@ -28,6 +36,12 @@ public class GunDataSave
         SpredUpgradeCost = gunData.SpredUpgradeCost;
         AmmoUpgradeCost= gunData.AmmoUpgradeCost;
         ReloadingUpgradeCost= gunData.ReloadingUpgradeCost;
+
+        DamageUpStep= gunData.DamageUpStep;
+        RateOfFireUpStep= gunData.RateOfFireUpStep;
+        SpredUpStep= gunData.SpredUpStep;
+        AmmoUpStep= gunData.AmmoUpStep;
+        ReloadingUpStep= gunData.ReloadingUpStep;
 
         return this;
     }

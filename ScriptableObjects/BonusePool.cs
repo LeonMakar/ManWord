@@ -30,12 +30,12 @@ public class BonusePool : ScriptableObject
 
     public void Initialize()
     {
-        _expolisiveBonusPool = new CustomePool<ExplosiveBonus>(new IntreractibleFactory<ExplosiveBonus>(_expolisiveBonus), 3);
-        _aimingBonusPool = new CustomePool<AimingBonus>(new IntreractibleFactory<AimingBonus>(_aimingBonus), 3);
-        _damageBonusPool = new CustomePool<DoubleDamageBonus>(new IntreractibleFactory<DoubleDamageBonus>(_damageBonus), 3);
-        _moneyBonusPool = new CustomePool<MoneyBonus>(new IntreractibleFactory<MoneyBonus>(_moneyBonus), 3);
-        _bombingBonusPool = new CustomePool<BombingBonus>(new IntreractibleFactory<BombingBonus>(_bombingBonus), 3);
-        _simpleObstacleNegativeBonusPool = new CustomePool<SimpleObstacle>(new IntreractibleFactory<SimpleObstacle>(_simpleObstacleNegativeBonus), 3);
+        _expolisiveBonusPool = new CustomePool<ExplosiveBonus>(new IntreractibleFactory<ExplosiveBonus>(_expolisiveBonus), 3,false);
+        _aimingBonusPool = new CustomePool<AimingBonus>(new IntreractibleFactory<AimingBonus>(_aimingBonus), 3,false);
+        _damageBonusPool = new CustomePool<DoubleDamageBonus>(new IntreractibleFactory<DoubleDamageBonus>(_damageBonus), 3,false);
+        _moneyBonusPool = new CustomePool<MoneyBonus>(new IntreractibleFactory<MoneyBonus>(_moneyBonus), 3,false);
+        _bombingBonusPool = new CustomePool<BombingBonus>(new IntreractibleFactory<BombingBonus>(_bombingBonus), 3,false);
+        _simpleObstacleNegativeBonusPool = new CustomePool<SimpleObstacle>(new IntreractibleFactory<SimpleObstacle>(_simpleObstacleNegativeBonus), 3,false);
     }
 
 

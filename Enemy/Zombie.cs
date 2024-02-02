@@ -49,6 +49,7 @@ public abstract class Zombie : MonoBehaviour
     private int _isHited;
     private int _isDied;
     private int _isStandUp;
+    private bool _isCrowling;
 
     #region Initialization
     [Inject]
@@ -81,6 +82,7 @@ public abstract class Zombie : MonoBehaviour
     /// <param name="boolian"></param>
     public void DiactivatingRagdoll(bool boolian)
     {
+        _isCrowling = boolian;
         _animator.enabled = boolian;
         foreach (var rigidbody in _bodies)
         {
@@ -182,8 +184,12 @@ public abstract class Zombie : MonoBehaviour
     private void Deading()
     {
         Health = 0;
-        _animator.SetTrigger(_isDied);
+        if (!_isCrowling)
+            _animator.SetTrigger(_isDied);
+        else
+            DethActions();
         _moneyShower.ChangeMoneyValue(HoldedMoney);
+        _isCrowling = false;
     }
     public void StoppingZoomingBulletTrail()
     {

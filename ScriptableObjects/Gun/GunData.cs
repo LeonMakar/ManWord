@@ -9,10 +9,10 @@ public class GunData : ScriptableObject
 {
     [field: SerializeField] public string GunName { get; private set; }
     public int Damage;
-    [field: SerializeField] public float RateOfFire { get; private set; }
-    [field: SerializeField] public float GunSpred;
-    [field: SerializeField] public int BulletAmmount { get; private set; }
-    [field: SerializeField] public float ReloadingTime { get; private set; }
+    public float RateOfFire;
+    public float GunSpred;
+    public int BulletAmmount;
+    public float ReloadingTime;
     [field: SerializeField] public int GunCoast { get; private set; }
     [field: SerializeField] public AudioClip ShootSound { get; private set; }
     [field: SerializeField] public AudioClip ReloadingSound { get; private set; }
@@ -26,6 +26,7 @@ public class GunData : ScriptableObject
     [SerializeField] private int _bulletAmmountUpgradeValue;
     [SerializeField] private float _reloadingTImeUpgradeValue;
 
+
     [Space(10), Header("Upgrade cost")]
     public int DamageUpgradeCost;
     public int RateOfFireUpgradeCost;
@@ -33,10 +34,17 @@ public class GunData : ScriptableObject
     public int AmmoUpgradeCost;
     public int ReloadingUpgradeCost;
 
+    [Space(10), Header("Upgrade step")]
+    [HideInInspector] public int DamageUpStep;
+    [HideInInspector] public int RateOfFireUpStep;
+    [HideInInspector] public int SpredUpStep;
+    [HideInInspector] public int AmmoUpStep;
+    [HideInInspector] public int ReloadingUpStep;
+
     [field: SerializeField, Space(10)] public float CostMultiplyIndex { get; private set; }
 
     public void UpgradeDamage() => Damage += _damageUpgradeValue;
-    public void UpgradeRateOfFire() => RateOfFire += _rateOfFireUpgradeValue;
+    public void UpgradeRateOfFire() => RateOfFire -= _rateOfFireUpgradeValue;
     public void UpgradeGunSpred() => GunSpred -= _spredUpgradeValue;
     public void UpgradeBulletAmmount() => BulletAmmount += _bulletAmmountUpgradeValue;
     public void UpgradeReloadingTime() => ReloadingTime -= _reloadingTImeUpgradeValue;
@@ -47,13 +55,19 @@ public class GunData : ScriptableObject
         RateOfFire = save.RateOfFire;
         GunSpred = save.GunSpred;
         BulletAmmount = save.BulletAmmount;
-        ReloadingTime= save.ReloadingTime;
+        ReloadingTime = save.ReloadingTime;
 
         DamageUpgradeCost = save.DamageUpgradeCost;
         RateOfFireUpgradeCost = save.RateOfFireUpgradeCost;
         SpredUpgradeCost = save.SpredUpgradeCost;
         AmmoUpgradeCost = save.AmmoUpgradeCost;
         ReloadingUpgradeCost = save.ReloadingUpgradeCost;
+
+        DamageUpStep = save.DamageUpStep;
+        RateOfFireUpStep = save.RateOfFireUpStep;
+        SpredUpStep = save.SpredUpStep;
+        AmmoUpStep = save.AmmoUpStep;
+        ReloadingUpStep = save.ReloadingUpStep;
 
         return this;
     }
