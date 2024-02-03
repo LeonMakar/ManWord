@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using Zenject;
 
 public abstract class Spawner : MonoBehaviour
@@ -14,6 +15,11 @@ public abstract class Spawner : MonoBehaviour
 
     public void StartSpawning()
     {
+        if (EnemySpawnData != null)
+            Debug.Log(EnemySpawnData.ToString());
+        if (BonusSpawnData != null)
+            Debug.Log(BonusSpawnData.ToString());
+
         StartCoroutine(Spawning());
     }
 

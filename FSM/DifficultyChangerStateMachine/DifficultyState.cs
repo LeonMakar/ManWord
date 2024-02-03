@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 public class DifficultyState : BaseState<DifficultyChangerStateMachine.DificultyStage>
 {
@@ -21,6 +22,7 @@ public class DifficultyState : BaseState<DifficultyChangerStateMachine.Dificulty
         _enemyChanceData = stateMachine.EnemyChanceData[(int)key];
         _bonusChanceData = stateMachine.BonusChanceDatas[(int)key];
         _stateToTransit = stateToTransit;
+
     }
 
     public override void EnterToState()
@@ -36,7 +38,7 @@ public class DifficultyState : BaseState<DifficultyChangerStateMachine.Dificulty
 
     public override void UpdateState()
     {
-        if (_transititonValue >= GameConstans.DiffcultyValue)
+        if (GameConstans.DiffcultyValue >= _transititonValue)
             ChangeStateAction.Invoke(_stateToTransit);
     }
 }
