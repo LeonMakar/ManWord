@@ -14,3 +14,4 @@ public class EnemySpawnChanceData : ScriptableObject
     [field: SerializeField] public ChanceRange StrongZombSpawning { get; private set; }
     [field: SerializeField] public ChanceRange SuperStrongZombSpawning { get; private set; }
 }
+

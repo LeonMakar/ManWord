@@ -6,48 +6,45 @@ using Zenject;
 public class ZombieSpawner : Spawner
 {
     private EnemyPool _enemyPool;
-    [SerializeField] private EnemySpawnChanceData _spawnData;
-
-
 
     [Inject]
     private void Construct(EnemyPool enemyPool)
     {
         _enemyPool = enemyPool;
     }
+    public void ChangeEnemySpawnData(EnemySpawnChanceData spawnData) => EnemySpawnData = spawnData;
 
-    public void ChangeSpawnData(EnemySpawnChanceData spawnData) => _spawnData = spawnData;
 
     protected override IEnumerator Spawning()
     {
         while (true)
         {
-            yield return new WaitForSeconds(_spawnData.SpawnRate);
+            yield return new WaitForSeconds(EnemySpawnData.SpawnRate);
             if (GameIsActive)
             {
                 int chance = Random.Range(0, 100);
 
-                if (chance >= _spawnData.SimpleZombSpawning.start && chance < _spawnData.SimpleZombSpawning.end)
+                if (chance >= EnemySpawnData.SimpleZombSpawning.start && chance < EnemySpawnData.SimpleZombSpawning.end)
                 {
                     var enemy = _enemyPool.GetSimpleZombyPool().GetFromPool();
                     InitializeEnemy(enemy);
                 }
-                if (chance >= _spawnData.YeakAndFastZombSpawning.start && chance < _spawnData.YeakAndFastZombSpawning.end)
+                if (chance >= EnemySpawnData.YeakAndFastZombSpawning.start && chance < EnemySpawnData.YeakAndFastZombSpawning.end)
                 {
                     var enemy = _enemyPool.GetYeakAndFastZombiePool().GetFromPool();
                     InitializeEnemy(enemy);
                 }
-                if (chance >= _spawnData.FastZombSpawning.start && chance < _spawnData.FastZombSpawning.end)
+                if (chance >= EnemySpawnData.FastZombSpawning.start && chance < EnemySpawnData.FastZombSpawning.end)
                 {
                     var enemy = _enemyPool.GetFastZombiePool().GetFromPool();
                     InitializeEnemy(enemy);
                 }
-                if (chance >= _spawnData.StrongZombSpawning.start && chance < _spawnData.StrongZombSpawning.end)
+                if (chance >= EnemySpawnData.StrongZombSpawning.start && chance < EnemySpawnData.StrongZombSpawning.end)
                 {
                     var enemy = _enemyPool.GetStrongZombiePool().GetFromPool();
                     InitializeEnemy(enemy);
                 }
-                if (chance >= _spawnData.SuperStrongZombSpawning.start && chance < _spawnData.SuperStrongZombSpawning.end)
+                if (chance >= EnemySpawnData.SuperStrongZombSpawning.start && chance < EnemySpawnData.SuperStrongZombSpawning.end)
                 {
                     var enemy = _enemyPool.GetSuperStrongZombie().GetFromPool();
                     InitializeEnemy(enemy);

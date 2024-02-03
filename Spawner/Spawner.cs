@@ -5,9 +5,12 @@ using Zenject;
 public abstract class Spawner : MonoBehaviour
 {
     [SerializeField] protected Vector2 SpawnBordersPosition;
-    [SerializeField] protected float SpawnTimeRate;
+    protected EnemySpawnChanceData EnemySpawnData;
+    protected BonusSpawnChanceData BonusSpawnData;
+
 
     protected bool GameIsActive;
+
 
     public void StartSpawning()
     {

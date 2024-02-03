@@ -6,9 +6,9 @@ using Zenject;
 public class ObstacleSpawner : Spawner
 {
     private BonusePool _bonusPool;
-    [SerializeField] private ChanceRange _chanceOfSimpleObstacle;
 
     private GameObject _spawnObject;
+    public void ChangeBonusSpawnData(BonusSpawnChanceData spawnData) => BonusSpawnData = spawnData;
 
     [Inject]
     private void Construct(BonusePool pool)
@@ -19,13 +19,13 @@ public class ObstacleSpawner : Spawner
     {
         while (true)
         {
-            yield return new WaitForSeconds(SpawnTimeRate);
+            yield return new WaitForSeconds(BonusSpawnData.ObstacleBonusSpawnRate);
             if (GameIsActive)
             {
                 int chance = UnityEngine.Random.Range(0, 100);
                 float x = RandomizeXPosition();
 
-                if (chance >= _chanceOfSimpleObstacle.start && chance < _chanceOfSimpleObstacle.end)
+                if (chance >= BonusSpawnData.ChanceOfObstacle.start && chance < BonusSpawnData.ChanceOfObstacle.end)
                     _spawnObject = _bonusPool.GetSimpleObstacleNegativeBonus().GetFromPool().gameObject;
 
                 _spawnObject.gameObject.SetActive(false);
