@@ -1,8 +1,7 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 using Zenject;
 
 public abstract class Zombie : MonoBehaviour
@@ -18,11 +17,11 @@ public abstract class Zombie : MonoBehaviour
 
     [field: SerializeField] public float RotationInterval { get; private set; }
 
-    protected string ZombieName;
     protected int HoldedMoney;
 
     private int _maxHealthAfterRandomizing;
-
+    public bool IsStartDying;
+    public int GetHealthOfZombie() => Health;
     //----------Scins----------//
     [Space(10), Header("Scins and RididBodyes")]
 
@@ -35,6 +34,8 @@ public abstract class Zombie : MonoBehaviour
     [Space(10), Header("Services")]
     [SerializeField] private Animator _animator;
     [SerializeField] protected CharacterController CharacterController;
+    [SerializeField] private TranslationZombieName ZombieName;
+
 
     protected GameObject ActiveScin;
 
@@ -106,6 +107,7 @@ public abstract class Zombie : MonoBehaviour
             Health = 0;
             _moneyShower.ChangeMoneyValue(HoldedMoney);
             DethActions();
+            IsStartDying=true;
         }
     }
     #endregion
@@ -116,13 +118,13 @@ public abstract class Zombie : MonoBehaviour
         ChangeZombieScin();
         RandomizeZombieHealth();
         CalculateMoneyHolding();
+        IsStartDying= false;
     }
     private void ChangeZombieScin()
     {
         _scinNumber = UnityEngine.Random.Range(0, _skins.Count);
         _skins[_scinNumber].SetActive(true);
         ActiveScin = _skins[_scinNumber];
-        ZombieName = ActiveScin.name;
     }
 
     private void RandomizeZombieHealth()
@@ -157,7 +159,7 @@ public abstract class Zombie : MonoBehaviour
         {
             _canChangeHealthBar = false;
             _healthBar.EnemyOnUnderAim = true;
-            _healthBar.SetNewHealthBarValue(ZombieName, _maxHealthAfterRandomizing, Health);
+            _healthBar.SetNewHealthBarValue(ZombieName.ZombieName, _maxHealthAfterRandomizing, Health);
             StartCoroutine(CanChangeHealBarValues());
         }
 
@@ -176,7 +178,10 @@ public abstract class Zombie : MonoBehaviour
         if (Health - damageValue > 0)
             Health -= damageValue;
         else if (Health - damageValue <= 0 && Health != 0)
+        {
             Deading();
+            IsStartDying = true;
+        }
 
         _healthBar?.ChangeSliderValues(_maxHealthAfterRandomizing, 0, Health, damageValue);
         _animator.SetTrigger(_isHited);
@@ -188,8 +193,10 @@ public abstract class Zombie : MonoBehaviour
             _animator.SetTrigger(_isDied);
         else
             DethActions();
+
         _moneyShower.ChangeMoneyValue(HoldedMoney);
         _isCrowling = false;
+        GameConstans.DiffcultyValue++;
     }
     public void StoppingZoomingBulletTrail()
     {

@@ -1,9 +1,12 @@
+using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using Zenject;
 
 public partial class DifficultyChangerStateMachine : StateManager<DifficultyChangerStateMachine.DificultyStage>
 {
+    [SerializeField] private TextMeshProUGUI _wavePassedText;
 
     [Space(10), Header("EnemySpawnChanes"), Tooltip("Register Order SuperEasy,Easy,SoftMedium,Medium,HardMedium,SoftHard,Hard,VeryHard,Epic,Unreal")]
     public List<EnemySpawnChanceData> EnemyChanceData = new List<EnemySpawnChanceData>(10);
@@ -20,11 +23,19 @@ public partial class DifficultyChangerStateMachine : StateManager<DifficultyChan
     public List<int> TransitionValueFromState = new List<int>(10);
 
 
+    private UIMoneyShower _money;
+    [HideInInspector] public int GoldToAdd = 5;
 
+    public void StartWaveCompliteRewarding()
+    {
+        _wavePassedText.gameObject.SetActive(true);
+        _money.AddGold(GoldToAdd);
+        StartCoroutine(StartVanish());
+    }
 
 
     [Inject]
-    private void Construct()
+    private void Construct(UIMoneyShower money)
     {
         SuperEasyState superEasyState = new SuperEasyState(DificultyStage.SuperEasy, this, DificultyStage.Easy);
         EasyState easyState = new EasyState(DificultyStage.Easy, this, DificultyStage.SoftMedium);
@@ -48,8 +59,29 @@ public partial class DifficultyChangerStateMachine : StateManager<DifficultyChan
         States.Add(DificultyStage.Epic, epicState);
         States.Add(DificultyStage.Unreal, unrealState);
 
+        _money = money;
 
         StartStateMachine(DificultyStage.SuperEasy);
+    }
+
+    private IEnumerator StartVanish()
+    {
+        Color textColor = _wavePassedText.color;
+        textColor.a = 0;
+        _wavePassedText.color = textColor;
+        while (textColor.a < 1)
+        {
+            textColor.a += Time.deltaTime;
+            _wavePassedText.color = textColor;
+            yield return null;
+        }
+        yield return new WaitForSeconds(3);
+        while (textColor.a > 0)
+        {
+            textColor.a -= Time.deltaTime;
+            _wavePassedText.color = textColor;
+            yield return null;
+        }
     }
 
     public enum DificultyStage

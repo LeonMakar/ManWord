@@ -13,6 +13,7 @@ public class GunData : ScriptableObject
     public float GunSpred;
     public int BulletAmmount;
     public float ReloadingTime;
+    public PurchaseType PurchaseType;
     [field: SerializeField] public int GunCoast { get; private set; }
     [field: SerializeField] public AudioClip ShootSound { get; private set; }
     [field: SerializeField] public AudioClip ReloadingSound { get; private set; }
@@ -71,4 +72,11 @@ public class GunData : ScriptableObject
 
         return this;
     }
+
+}
+
+public enum PurchaseType
+{
+    Gold,
+    Money
 }

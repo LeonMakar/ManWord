@@ -27,13 +27,13 @@ public class BonusSpawner : Spawner
 
                 if (chance >= BonusSpawnData.ChanceOfAiming.start && chance < BonusSpawnData.ChanceOfAiming.end)
                     _spawnObject = _bonusPool.GetAimingBonusPool().GetFromPool().gameObject;
-                if (chance >= BonusSpawnData.ChanceOfExplosion.start && chance < BonusSpawnData.ChanceOfExplosion.end)
+                else if (chance >= BonusSpawnData.ChanceOfExplosion.start && chance < BonusSpawnData.ChanceOfExplosion.end)
                     _spawnObject = _bonusPool.GetExpolisiveBonusPool().GetFromPool().gameObject;
-                if (chance >= BonusSpawnData.ChanceOfDoubleDamage.start && chance < BonusSpawnData.ChanceOfDoubleDamage.end)
+                else if (chance >= BonusSpawnData.ChanceOfDoubleDamage.start && chance < BonusSpawnData.ChanceOfDoubleDamage.end)
                     _spawnObject = _bonusPool.GetDoubleDamagePool().GetFromPool().gameObject;
-                if (chance >= BonusSpawnData.ChanceOfMoney.start && chance < BonusSpawnData.ChanceOfMoney.end)
+                else if (chance >= BonusSpawnData.ChanceOfMoney.start && chance < BonusSpawnData.ChanceOfMoney.end)
                     _spawnObject = _bonusPool.GetMoneyPool().GetFromPool().gameObject;
-                if (chance >= BonusSpawnData.ChanceOfBombing.start && chance < BonusSpawnData.ChanceOfBombing.end)
+                else if (chance >= BonusSpawnData.ChanceOfBombing.start && chance < BonusSpawnData.ChanceOfBombing.end)
                     _spawnObject = _bonusPool.GetBombingPool().GetFromPool().gameObject;
 
                 _spawnObject.gameObject.SetActive(false);

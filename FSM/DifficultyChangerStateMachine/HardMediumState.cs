@@ -4,6 +4,7 @@
     {
         public HardMediumState(DificultyStage key, DifficultyChangerStateMachine stateMachine, DificultyStage stateToTransit) : base(key, stateMachine, stateToTransit)
         {
+            GoldToAddWhenWaveDone = 10;
         }
     }
 }

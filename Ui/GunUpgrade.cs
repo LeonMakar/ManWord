@@ -47,7 +47,7 @@ public class GunUpgrade : MonoBehaviour
         switch (parameterToUpgrade)
         {
             case "Damage":
-                if (_money.Money >= gunData.DamageUpgradeCost && gunData.DamageUpStep < 5)
+                if (_money.AllMoney >= gunData.DamageUpgradeCost && gunData.DamageUpStep < 5)
                 {
                     gunData.UpgradeDamage();
                     ChangeValuesOfParameter(ref gunData.DamageUpgradeCost, _damageUpgradeCost, gunData.CostMultiplyIndex,
@@ -58,7 +58,7 @@ public class GunUpgrade : MonoBehaviour
                 }
                 break;
             case "RateOfFire":
-                if (_money.Money >= gunData.RateOfFireUpgradeCost && gunData.RateOfFireUpStep < 5)
+                if (_money.AllMoney >= gunData.RateOfFireUpgradeCost && gunData.RateOfFireUpStep < 5)
                 {
                     gunData.UpgradeRateOfFire();
                     ChangeValuesOfParameter(ref gunData.RateOfFireUpgradeCost, FireRateUpgradeCost, gunData.CostMultiplyIndex,
@@ -69,7 +69,7 @@ public class GunUpgrade : MonoBehaviour
                 }
                 break;
             case "Spred":
-                if (_money.Money >= gunData.SpredUpgradeCost && gunData.SpredUpStep < 5)
+                if (_money.AllMoney >= gunData.SpredUpgradeCost && gunData.SpredUpStep < 5)
                 {
                     gunData.UpgradeGunSpred();
                     ChangeValuesOfParameter(ref gunData.SpredUpgradeCost, SpredUpgradeCost, gunData.CostMultiplyIndex,
@@ -80,7 +80,7 @@ public class GunUpgrade : MonoBehaviour
                 }
                 break;
             case "Ammo":
-                if (_money.Money >= gunData.AmmoUpgradeCost && gunData.AmmoUpStep < 5)
+                if (_money.AllMoney >= gunData.AmmoUpgradeCost && gunData.AmmoUpStep < 5)
                 {
                     gunData.UpgradeBulletAmmount();
                     ChangeValuesOfParameter(ref gunData.AmmoUpgradeCost, BulletAmmountUpgradeCost, gunData.CostMultiplyIndex,
@@ -91,7 +91,7 @@ public class GunUpgrade : MonoBehaviour
                 }
                 break;
             case "Reloading":
-                if (_money.Money >= gunData.ReloadingUpgradeCost && gunData.ReloadingUpStep < 5)
+                if (_money.AllMoney >= gunData.ReloadingUpgradeCost && gunData.ReloadingUpStep < 5)
                 {
                     gunData.UpgradeReloadingTime();
                     ChangeValuesOfParameter(ref gunData.ReloadingUpgradeCost, ReloadingTimeUpgradeCost, gunData.CostMultiplyIndex,
@@ -107,19 +107,19 @@ public class GunUpgrade : MonoBehaviour
 
     private void ChangeValuesOfParameter(ref int upgradeCost, TextMeshProUGUI textCost, float costMultiplayer, TextMeshProUGUI textValue, ref float parameter)
     {
-        _money.ChangeMoneyValue(-upgradeCost);
+        _money.AllMoney -= upgradeCost;
         upgradeCost = Mathf.FloorToInt(upgradeCost * costMultiplayer);
         textCost.text = upgradeCost.ToString() + "$";
         textValue.text = Math.Round((double)parameter, 2).ToString();
-        _weaponChooser.MoneyText.text = _money.Money.ToString();
+        _weaponChooser.MoneyText.text = _money.AllMoney.ToString();
     }
     private void ChangeValuesOfParameter(ref int upgradeCost, TextMeshProUGUI textCost, float costMultiplayer, TextMeshProUGUI textValue, ref int parameter)
     {
-        _money.ChangeMoneyValue(-upgradeCost);
+        _money.AllMoney -= upgradeCost;
         upgradeCost = Mathf.FloorToInt(upgradeCost * costMultiplayer);
         textCost.text = upgradeCost.ToString() + "$";
         textValue.text = parameter.ToString();
-        _weaponChooser.MoneyText.text = _money.Money.ToString();
+        _weaponChooser.MoneyText.text = _money.AllMoney.ToString();
     }
 
     public void RemoveUpgradeIcon()
@@ -155,36 +155,40 @@ public class GunUpgrade : MonoBehaviour
         if (_weaponChooser.QueuePosition - 1 < _weaponChooser.WeaponsData.Count)
         {
             var gunData = _weaponSaveData.ByedWeapon.Find(x => x == _weaponChooser.WeaponsData[_weaponChooser.QueuePosition - 1]);
-            _damageUpgradeCost.text = gunData.DamageUpgradeCost.ToString() + "$";
-            FireRateUpgradeCost.text = Math.Round((double)gunData.RateOfFireUpgradeCost, 2).ToString() + "$";
-            SpredUpgradeCost.text = Math.Round((double)gunData.SpredUpgradeCost, 2).ToString() + "$";
-            BulletAmmountUpgradeCost.text = gunData.AmmoUpgradeCost.ToString() + "$";
-            ReloadingTimeUpgradeCost.text = Math.Round((double)gunData.ReloadingUpgradeCost, 2).ToString() + "$";
+            if (gunData != null)
+            {
+                _damageUpgradeCost.text = gunData.DamageUpgradeCost.ToString() + "$";
+                FireRateUpgradeCost.text = Math.Round((double)gunData.RateOfFireUpgradeCost, 2).ToString() + "$";
+                SpredUpgradeCost.text = Math.Round((double)gunData.SpredUpgradeCost, 2).ToString() + "$";
+                BulletAmmountUpgradeCost.text = gunData.AmmoUpgradeCost.ToString() + "$";
+                ReloadingTimeUpgradeCost.text = Math.Round((double)gunData.ReloadingUpgradeCost, 2).ToString() + "$";
 
-            if (gunData.DamageUpStep >= 5)
-                RemoveSprecificIcon(_DamageUpgrade);
-            else
-                ActivateSprecificIcon(_DamageUpgrade);
+                if (gunData.DamageUpStep >= 5)
+                    RemoveSprecificIcon(_DamageUpgrade);
+                else
+                    ActivateSprecificIcon(_DamageUpgrade);
 
-            if (gunData.RateOfFireUpStep >= 5)
-                RemoveSprecificIcon(FireRateUpgrade);
-            else
-                ActivateSprecificIcon(FireRateUpgrade);
+                if (gunData.RateOfFireUpStep >= 5)
+                    RemoveSprecificIcon(FireRateUpgrade);
+                else
+                    ActivateSprecificIcon(FireRateUpgrade);
 
-            if (gunData.SpredUpStep >= 5)
-                RemoveSprecificIcon(SpredUpgrade);
-            else
-                ActivateSprecificIcon(SpredUpgrade);
+                if (gunData.SpredUpStep >= 5)
+                    RemoveSprecificIcon(SpredUpgrade);
+                else
+                    ActivateSprecificIcon(SpredUpgrade);
 
-            if (gunData.AmmoUpStep >= 5)
-                RemoveSprecificIcon(BulletAmmountUpgrade);
-            else
-                ActivateSprecificIcon(BulletAmmountUpgrade);
+                if (gunData.AmmoUpStep >= 5)
+                    RemoveSprecificIcon(BulletAmmountUpgrade);
+                else
+                    ActivateSprecificIcon(BulletAmmountUpgrade);
 
-            if (gunData.ReloadingUpStep >= 5)
-                RemoveSprecificIcon(ReloadingTimeUpgrade);
-            else
-                ActivateSprecificIcon(ReloadingTimeUpgrade);
+                if (gunData.ReloadingUpStep >= 5)
+                    RemoveSprecificIcon(ReloadingTimeUpgrade);
+                else
+                    ActivateSprecificIcon(ReloadingTimeUpgrade);
+
+            }
         }
     }
 }

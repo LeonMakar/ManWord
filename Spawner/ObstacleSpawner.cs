@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 
@@ -27,6 +26,10 @@ public class ObstacleSpawner : Spawner
 
                 if (chance >= BonusSpawnData.ChanceOfObstacle.start && chance < BonusSpawnData.ChanceOfObstacle.end)
                     _spawnObject = _bonusPool.GetSimpleObstacleNegativeBonus().GetFromPool().gameObject;
+                else if (chance >= BonusSpawnData.ChanceOfSingleShield.start && chance < BonusSpawnData.ChanceOfSingleShield.end)
+                    _spawnObject = _bonusPool.GetSingleShieldNegativeBonus().GetFromPool().gameObject;
+                else if (chance >= BonusSpawnData.ChanceOfDoubleShield.start && chance < BonusSpawnData.ChanceOfDoubleShield.end)
+                    _spawnObject = _bonusPool.GetdoubleShieldNegativeBonus().GetFromPool().gameObject;
 
                 _spawnObject.gameObject.SetActive(false);
                 _spawnObject.transform.position = new Vector3(x, _spawnObject.transform.position.y, transform.position.z);

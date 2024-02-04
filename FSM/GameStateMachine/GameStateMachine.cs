@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using Zenject;
 
@@ -13,6 +14,9 @@ public class GameStateMachine : StateManager<GameStateMachine.GameStates>
 
     [SerializeField] private GameObject _playerGameObject;
     [SerializeField] private GameObject[] _menuZombie;
+    [SerializeField] private AudioSource _musicAudio;
+
+
 
     public enum GameStates
     {
@@ -25,9 +29,9 @@ public class GameStateMachine : StateManager<GameStateMachine.GameStates>
     private void Cunstruct(EventBus eventBus, EnemyPool enemyPool, SaveAndLoadProcess saveAndLoad, UIMoneyShower uIMoneyShower, BonusePool bonusePool)
     {
         GameIsActiveState gameIsActiveState = new GameIsActiveState(GameStates.GameIsActive, _gamePlayCanvas, _enemySpawner,
-            _playerGameObject, eventBus, _menuZombie, enemyPool, uIMoneyShower, _bonusSpawner, bonusePool, _obstacleSpawner);
+            _playerGameObject, eventBus, _menuZombie, enemyPool, uIMoneyShower, _bonusSpawner, bonusePool, _obstacleSpawner,_musicAudio);
 
-        GameIsOverState gameIsOverState = new GameIsOverState(GameStates.GameIsOver, _gameOverCanvas, saveAndLoad);
+        GameIsOverState gameIsOverState = new GameIsOverState(GameStates.GameIsOver, _gameOverCanvas, saveAndLoad,uIMoneyShower);
 
         GameIsStopedState gameIsStopedState = new GameIsStopedState(GameStates.GameIsStoped, _gameMainMenuCanvas);
 

@@ -2,6 +2,7 @@
 {
     public SoftHardState(DifficultyChangerStateMachine.DificultyStage key, DifficultyChangerStateMachine stateMachine, DifficultyChangerStateMachine.DificultyStage stateToTransit) : base(key, stateMachine, stateToTransit)
     {
+        GoldToAddWhenWaveDone = 10;
     }
 }
 

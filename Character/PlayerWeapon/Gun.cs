@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Zenject;
@@ -17,6 +18,9 @@ public class Gun : MonoBehaviour
     // -------------- Gun perfomance ------------------//
     public float RateOfFire { get; private set; }
     public int GunDamage { get; private set; }
+
+    [HideInInspector] public bool IsDamageBusted;
+
     public int BulletAmmount { get; set; }
     public int MaxBulletAmmount { get; private set; }
     public float ReloadingTime { get; private set; }
@@ -106,7 +110,12 @@ public class Gun : MonoBehaviour
         SynchronizeWeaponeData();
     }
 
-    public void SetGunDamage(int damage) => GunDamage = damage;
+    public void SetGunDamage(int damage)
+    {
+        GunDamage = damage;
+        IsDamageBusted = true;
+    }
+
     public void SetEquipedGun(GunData gunData) => GunData = gunData;
     private void GameIsStarted(StartGameSignal signal)
     {

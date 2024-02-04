@@ -29,22 +29,22 @@ public class ZombieSpawner : Spawner
                     var enemy = _enemyPool.GetSimpleZombyPool().GetFromPool();
                     InitializeEnemy(enemy);
                 }
-                if (chance >= EnemySpawnData.YeakAndFastZombSpawning.start && chance < EnemySpawnData.YeakAndFastZombSpawning.end)
+                else if (chance >= EnemySpawnData.YeakAndFastZombSpawning.start && chance < EnemySpawnData.YeakAndFastZombSpawning.end)
                 {
                     var enemy = _enemyPool.GetYeakAndFastZombiePool().GetFromPool();
                     InitializeEnemy(enemy);
                 }
-                if (chance >= EnemySpawnData.FastZombSpawning.start && chance < EnemySpawnData.FastZombSpawning.end)
+                else if (chance >= EnemySpawnData.FastZombSpawning.start && chance < EnemySpawnData.FastZombSpawning.end)
                 {
                     var enemy = _enemyPool.GetFastZombiePool().GetFromPool();
                     InitializeEnemy(enemy);
                 }
-                if (chance >= EnemySpawnData.StrongZombSpawning.start && chance < EnemySpawnData.StrongZombSpawning.end)
+                else if (chance >= EnemySpawnData.StrongZombSpawning.start && chance < EnemySpawnData.StrongZombSpawning.end)
                 {
                     var enemy = _enemyPool.GetStrongZombiePool().GetFromPool();
                     InitializeEnemy(enemy);
                 }
-                if (chance >= EnemySpawnData.SuperStrongZombSpawning.start && chance < EnemySpawnData.SuperStrongZombSpawning.end)
+                else if (chance >= EnemySpawnData.SuperStrongZombSpawning.start && chance < EnemySpawnData.SuperStrongZombSpawning.end)
                 {
                     var enemy = _enemyPool.GetSuperStrongZombie().GetFromPool();
                     InitializeEnemy(enemy);

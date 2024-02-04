@@ -25,10 +25,17 @@ public class DoubleDamageBonus : InteractibleObjects
     }
     private IEnumerator TimingBonusDuration(float duration, Gun gun)
     {
-        gun.SetGunDamage(gun.GunDamage * 2);
-        yield return new WaitForSeconds(duration);
-        gun.SetGunDamage(gun.GunDamage / 2);
-        _meshRenderer.enabled = true;
-        ParentObject.gameObject.SetActive(false);
+        if (!gun.IsDamageBusted)
+        {
+            gun.SetGunDamage(gun.GunDamage * 2);
+            var currentspeed = Speed;
+            Speed = 0;
+            yield return new WaitForSeconds(duration);
+            gun.SetGunDamage(gun.GunDamage / 2);
+            Speed = currentspeed;
+            gun.IsDamageBusted = false;
+            _meshRenderer.enabled = true;
+            ParentObject.gameObject.SetActive(false);
+        }
     }
 }

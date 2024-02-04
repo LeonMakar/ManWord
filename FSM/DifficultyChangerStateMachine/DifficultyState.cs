@@ -11,7 +11,7 @@ public class DifficultyState : BaseState<DifficultyChangerStateMachine.Dificulty
     private DifficultyChangerStateMachine.DificultyStage _stateToTransit;
     private int _transititonValue;
     private DifficultyChangerStateMachine _stateMachine;
-
+    protected int GoldToAddWhenWaveDone;
     public DifficultyState(DifficultyChangerStateMachine.DificultyStage key, DifficultyChangerStateMachine stateMachine, DifficultyChangerStateMachine.DificultyStage stateToTransit) : base(key)
     {
         _stateMachine = stateMachine;
@@ -34,6 +34,8 @@ public class DifficultyState : BaseState<DifficultyChangerStateMachine.Dificulty
 
     public override void ExitFromState()
     {
+        _stateMachine.GoldToAdd = GoldToAddWhenWaveDone;
+        _stateMachine.StartWaveCompliteRewarding();
     }
 
     public override void UpdateState()

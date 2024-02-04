@@ -9,6 +9,9 @@ public class BonusePool : ScriptableObject
     [SerializeField] private MoneyBonus _moneyBonus;
     [SerializeField] private BombingBonus _bombingBonus;
     [SerializeField] private SimpleObstacle _simpleObstacleNegativeBonus;
+    [SerializeField] private ShieldObstacle _singleShieldNegativeBonus;
+    [SerializeField] private ShieldObstacle _doubleShieldNegativeBonus;
+
 
 
 
@@ -19,6 +22,9 @@ public class BonusePool : ScriptableObject
     private CustomePool<MoneyBonus> _moneyBonusPool;
     private CustomePool<BombingBonus> _bombingBonusPool;
     private CustomePool<SimpleObstacle> _simpleObstacleNegativeBonusPool;
+    private CustomePool<ShieldObstacle> _singleShieldNegativeBonusPool;
+    private CustomePool<ShieldObstacle> _doubleShieldNegativeBonusPool;
+
 
     public CustomePool<ExplosiveBonus> GetExpolisiveBonusPool() => _expolisiveBonusPool;
     public CustomePool<AimingBonus> GetAimingBonusPool() => _aimingBonusPool;
@@ -26,16 +32,20 @@ public class BonusePool : ScriptableObject
     public CustomePool<MoneyBonus> GetMoneyPool() => _moneyBonusPool;
     public CustomePool<BombingBonus> GetBombingPool() => _bombingBonusPool;
     public CustomePool<SimpleObstacle> GetSimpleObstacleNegativeBonus() => _simpleObstacleNegativeBonusPool;
+    public CustomePool<ShieldObstacle> GetSingleShieldNegativeBonus() => _singleShieldNegativeBonusPool;
+    public CustomePool<ShieldObstacle> GetdoubleShieldNegativeBonus() => _doubleShieldNegativeBonusPool;
 
 
     public void Initialize()
     {
-        _expolisiveBonusPool = new CustomePool<ExplosiveBonus>(new IntreractibleFactory<ExplosiveBonus>(_expolisiveBonus), 3,false);
-        _aimingBonusPool = new CustomePool<AimingBonus>(new IntreractibleFactory<AimingBonus>(_aimingBonus), 3,false);
-        _damageBonusPool = new CustomePool<DoubleDamageBonus>(new IntreractibleFactory<DoubleDamageBonus>(_damageBonus), 3,false);
-        _moneyBonusPool = new CustomePool<MoneyBonus>(new IntreractibleFactory<MoneyBonus>(_moneyBonus), 3,false);
-        _bombingBonusPool = new CustomePool<BombingBonus>(new IntreractibleFactory<BombingBonus>(_bombingBonus), 3,false);
-        _simpleObstacleNegativeBonusPool = new CustomePool<SimpleObstacle>(new IntreractibleFactory<SimpleObstacle>(_simpleObstacleNegativeBonus), 3,false);
+        _expolisiveBonusPool = new CustomePool<ExplosiveBonus>(new IntreractibleFactory<ExplosiveBonus>(_expolisiveBonus), 3, false);
+        _aimingBonusPool = new CustomePool<AimingBonus>(new IntreractibleFactory<AimingBonus>(_aimingBonus), 3, false);
+        _damageBonusPool = new CustomePool<DoubleDamageBonus>(new IntreractibleFactory<DoubleDamageBonus>(_damageBonus), 3, false);
+        _moneyBonusPool = new CustomePool<MoneyBonus>(new IntreractibleFactory<MoneyBonus>(_moneyBonus), 3, false);
+        _bombingBonusPool = new CustomePool<BombingBonus>(new IntreractibleFactory<BombingBonus>(_bombingBonus), 3, false);
+        _simpleObstacleNegativeBonusPool = new CustomePool<SimpleObstacle>(new IntreractibleFactory<SimpleObstacle>(_simpleObstacleNegativeBonus), 3, false);
+        _singleShieldNegativeBonusPool = new CustomePool<ShieldObstacle>(new IntreractibleFactory<ShieldObstacle>(_singleShieldNegativeBonus), 1, false);
+        _doubleShieldNegativeBonusPool = new CustomePool<ShieldObstacle>(new IntreractibleFactory<ShieldObstacle>(_doubleShieldNegativeBonus), 1, false);
     }
 
 
@@ -48,5 +58,7 @@ public class BonusePool : ScriptableObject
         _moneyBonusPool.RemooveAllObject();
         _bombingBonusPool.RemooveAllObject();
         _simpleObstacleNegativeBonusPool.RemooveAllObject();
+        _singleShieldNegativeBonusPool.RemooveAllObject();
+        _doubleShieldNegativeBonusPool.RemooveAllObject();
     }
 }

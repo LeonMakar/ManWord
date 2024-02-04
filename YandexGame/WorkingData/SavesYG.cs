@@ -17,6 +17,7 @@ namespace YG
         // Ваши сохранения
 
         public int Money = 0;
+        public int Gold = 0;
 
         public bool IsFirstSwitchingOn;
         public GunDataSave DefoltGun;
@@ -28,6 +29,7 @@ namespace YG
         public SavesYG()
         {
             Money = 0;
+            Gold = 0;
             IsFirstSwitchingOn = true;
         }
     }

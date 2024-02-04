@@ -24,7 +24,11 @@ public class WeaponChooser : MonoBehaviour
 
     [Header("Button")]
     [SerializeField] TextMeshProUGUI _buyAndSelectButtoneText;
-    [SerializeField] Button _buyAndSelectButtone;
+    [SerializeField] Button _buyButtone;
+    [SerializeField] Button _selectButtone;
+
+    private GameObject _activeButton;
+
 
 
     [Space(20)]
@@ -38,6 +42,11 @@ public class WeaponChooser : MonoBehaviour
     [SerializeField] private float _swiftSpeed;
 
     [field: SerializeField] public TextMeshProUGUI MoneyText { get; private set; }
+    [field: SerializeField] public TextMeshProUGUI GoldText { get; private set; }
+
+    [SerializeField] private GameObject _priceTypeGold;
+    [SerializeField] private GameObject _priceTypeMoney;
+
 
 
     public GunData _choosenGun { get; private set; }
@@ -72,6 +81,7 @@ public class WeaponChooser : MonoBehaviour
         if (QueuePosition < WeaponsData.Count && !_isSwiping)
         {
             _isSwiping = true;
+            _allGunParameters.SetActive(true);
             if (_newWeapon != null)
             {
                 if (_oldWeapon != null)
@@ -111,6 +121,7 @@ public class WeaponChooser : MonoBehaviour
         if (QueuePosition < WeaponsData.Count && !_isSwiping)
         {
             _isSwiping = true;
+            _allGunParameters.SetActive(true);
             if (_newWeapon != null)
             {
                 if (_oldWeapon != null)
@@ -148,9 +159,12 @@ public class WeaponChooser : MonoBehaviour
     public void ChangeToPreviousWeapon()
     {
         if (QueuePosition > 1)
+        {
+
             if (_newWeapon != null && !_isSwiping)
             {
                 _isSwiping = true;
+                _allGunParameters.SetActive(true);
                 StartCoroutine(MooveWeapon(_weaponFinishPosition, _weaponStartPosition, _newWeapon, true));
                 if (_oldWeapon != null)
                 {
@@ -169,6 +183,7 @@ public class WeaponChooser : MonoBehaviour
                     StartCoroutine(MooveWeapon(_weaponFarAwayPosition, _weaponFinishPosition, _weaponsMemmoryList.Last()));
                     _weaponsMemmoryList.Remove(_weaponsMemmoryList.Last());
                     _newWeapon = _oldWeapon;
+
                 }
                 QueuePosition--;
                 ChangeParametersText();
@@ -194,24 +209,26 @@ public class WeaponChooser : MonoBehaviour
                     Swipe.Invoke();
                 }
             }
+        }
     }
     private IEnumerator MooveWeapon(Transform startPosition, Transform finishPosition, GameObject weaponToMoove)
     {
         _time = 0;
-        _buyAndSelectButtone.gameObject.SetActive(false);
+        _activeButton.gameObject.SetActive(false);
         while (_time < 1.2f)
         {
             yield return null;
             weaponToMoove.transform.position = Vector3.Lerp(startPosition.position, finishPosition.position, _time * _swiftSpeed);
         }
         _isSwiping = false;
-        _buyAndSelectButtone.gameObject.SetActive(true);
+        if (QueuePosition <= WeaponsData.Count)
+            _activeButton.gameObject.SetActive(true);
 
     }
     private IEnumerator MooveWeapon(Transform startPosition, Transform finishPosition, GameObject weaponToMoove, bool doDestroy)
     {
         _time = 0;
-        _buyAndSelectButtone.gameObject.SetActive(false);
+        _activeButton.gameObject.SetActive(false);
         while (_time < 1.2f)
         {
             yield return null;
@@ -220,7 +237,8 @@ public class WeaponChooser : MonoBehaviour
         if (doDestroy)
             Destroy(weaponToMoove.gameObject);
         _isSwiping = false;
-        _buyAndSelectButtone.gameObject.SetActive(true);
+        if (QueuePosition <= WeaponsData.Count)
+            _activeButton.gameObject.SetActive(true);
 
     }
     private void ChangeParametersText()
@@ -232,36 +250,55 @@ public class WeaponChooser : MonoBehaviour
         _reloadingText.text = Math.Round(WeaponsData[QueuePosition - 1].ReloadingTime, 2).ToString() + " sec";
         _costText.text = WeaponsData[QueuePosition - 1].GunCoast.ToString();
         _weaponNameText.text = WeaponsData[QueuePosition - 1].GunName.ToString();
+        if (WeaponsData[QueuePosition - 1].PurchaseType == PurchaseType.Money)
+        {
+            _priceTypeMoney.SetActive(true);
+            _priceTypeGold.SetActive(false);
+        }
+        else
+        {
+            _priceTypeMoney.SetActive(false);
+            _priceTypeGold.SetActive(true);
+        }
+
     }
     #endregion
 
     #region Initialization  
     public void SetMenuAsByingMenu()
     {
+        if (_activeButton != null)
+            _activeButton.SetActive(false);
         WeaponsData = _weaponSaveData.NonByedWeapon;
-        _buyAndSelectButtone.onClick.RemoveAllListeners();
-        _buyAndSelectButtone.onClick.AddListener(BuyWeapon);
+        _activeButton = _buyButtone.gameObject;
+        _activeButton.SetActive(true);
         _buyAndSelectButtoneText.text = "Buy";
-        MoneyText.text = _moneyShower.Money.ToString();
+        MoneyText.text = _moneyShower.AllMoney.ToString();
+        GoldText.text = _moneyShower.AllGold.ToString();
+
 
     }
     public void SetMenuAsSelectingMenu()
     {
+        if (_activeButton != null)
+            _activeButton.SetActive(false);
         WeaponsData = _weaponSaveData.ByedWeapon;
-        _buyAndSelectButtone.onClick.RemoveAllListeners();
-        _buyAndSelectButtone.onClick.AddListener(SelectWeapone);
+        _activeButton = _selectButtone.gameObject;
+        _activeButton.SetActive(true);
         _buyAndSelectButtoneText.text = "Select";
-        MoneyText.text = _moneyShower.Money.ToString();
+        MoneyText.text = _moneyShower.AllMoney.ToString();
+        GoldText.text = _moneyShower.AllGold.ToString();
+
     }
     #endregion
 
     public void DeleteMenu()
     {
+
         foreach (var item in _weaponsMemmoryList)
-        {
             Destroy(item.gameObject);
-            _weaponsMemmoryList.Remove(item);
-        }
+
+        _weaponsMemmoryList.Clear();
         if (_newWeapon != null)
             Destroy(_newWeapon.gameObject);
         if (_oldWeapon != null)
@@ -277,9 +314,27 @@ public class WeaponChooser : MonoBehaviour
     }
     public void BuyWeapon()
     {
-        _weaponSaveData.ByingWeapon(WeaponsData[QueuePosition - 1]);
-        QueuePosition--;
-        ChangeToNextWeapon(true);
+        if (WeaponsData[QueuePosition - 1].PurchaseType == PurchaseType.Money)
+        {
+            if (_moneyShower.AllMoney >= WeaponsData[QueuePosition - 1].GunCoast)
+            {
+                _weaponSaveData.ByingWeapon(WeaponsData[QueuePosition - 1], PurchaseType.Money);
+                QueuePosition--;
+                ChangeToNextWeapon(true);
+                MoneyText.text = _moneyShower.AllMoney.ToString();
+            }
+        }
+        else
+        {
+            if (_moneyShower.AllGold >= WeaponsData[QueuePosition - 1].GunCoast)
+            {
+                _weaponSaveData.ByingWeapon(WeaponsData[QueuePosition - 1], PurchaseType.Gold);
+                QueuePosition--;
+                ChangeToNextWeapon(true);
+                GoldText.text = _moneyShower.AllGold.ToString();
+            }
+        }
+
     }
     private void DeleteGunFromList(bool boolian)
     {
