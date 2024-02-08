@@ -11,6 +11,7 @@ public class BonusePool : ScriptableObject
     [SerializeField] private SimpleObstacle _simpleObstacleNegativeBonus;
     [SerializeField] private ShieldObstacle _singleShieldNegativeBonus;
     [SerializeField] private ShieldObstacle _doubleShieldNegativeBonus;
+    [SerializeField] private TurretBonus _turretBonus;
 
 
 
@@ -24,6 +25,7 @@ public class BonusePool : ScriptableObject
     private CustomePool<SimpleObstacle> _simpleObstacleNegativeBonusPool;
     private CustomePool<ShieldObstacle> _singleShieldNegativeBonusPool;
     private CustomePool<ShieldObstacle> _doubleShieldNegativeBonusPool;
+    private CustomePool<TurretBonus> _turretBonusPool;
 
 
     public CustomePool<ExplosiveBonus> GetExpolisiveBonusPool() => _expolisiveBonusPool;
@@ -34,6 +36,7 @@ public class BonusePool : ScriptableObject
     public CustomePool<SimpleObstacle> GetSimpleObstacleNegativeBonus() => _simpleObstacleNegativeBonusPool;
     public CustomePool<ShieldObstacle> GetSingleShieldNegativeBonus() => _singleShieldNegativeBonusPool;
     public CustomePool<ShieldObstacle> GetdoubleShieldNegativeBonus() => _doubleShieldNegativeBonusPool;
+    public CustomePool<TurretBonus> GetTurretBonusPool() => _turretBonusPool;
 
 
     public void Initialize()
@@ -46,6 +49,7 @@ public class BonusePool : ScriptableObject
         _simpleObstacleNegativeBonusPool = new CustomePool<SimpleObstacle>(new IntreractibleFactory<SimpleObstacle>(_simpleObstacleNegativeBonus), 3, false);
         _singleShieldNegativeBonusPool = new CustomePool<ShieldObstacle>(new IntreractibleFactory<ShieldObstacle>(_singleShieldNegativeBonus), 1, false);
         _doubleShieldNegativeBonusPool = new CustomePool<ShieldObstacle>(new IntreractibleFactory<ShieldObstacle>(_doubleShieldNegativeBonus), 1, false);
+        _turretBonusPool = new CustomePool<TurretBonus>(new IntreractibleFactory<TurretBonus>(_turretBonus), 1, false);
     }
 
 
@@ -60,5 +64,6 @@ public class BonusePool : ScriptableObject
         _simpleObstacleNegativeBonusPool.RemooveAllObject();
         _singleShieldNegativeBonusPool.RemooveAllObject();
         _doubleShieldNegativeBonusPool.RemooveAllObject();
+        _turretBonusPool.RemooveAllObject();
     }
 }

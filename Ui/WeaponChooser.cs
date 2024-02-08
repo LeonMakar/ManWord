@@ -26,6 +26,8 @@ public class WeaponChooser : MonoBehaviour
     [SerializeField] TextMeshProUGUI _buyAndSelectButtoneText;
     [SerializeField] Button _buyButtone;
     [SerializeField] Button _selectButtone;
+    [SerializeField] Button _menuButtone;
+    [SerializeField] Button _backButtone;
 
     private GameObject _activeButton;
 
@@ -62,16 +64,16 @@ public class WeaponChooser : MonoBehaviour
     private bool _isSwiping;
     private Action<bool> _deleteGun;
     public static Action Swipe;
-
-
+    private SaveAndLoadProcess _save;
 
     [Inject]
-    private void Construct(Gun gun, WeaponSaveData weaponSaveData, UIMoneyShower moneyShower)
+    private void Construct(Gun gun, WeaponSaveData weaponSaveData, UIMoneyShower moneyShower, SaveAndLoadProcess save)
     {
         _gun = gun;
         _weaponSaveData = weaponSaveData;
         _moneyShower = moneyShower;
         _deleteGun += DeleteGunFromList;
+        _save = save;
     }
 
     #region WeaponeSwipeMooving
@@ -215,6 +217,8 @@ public class WeaponChooser : MonoBehaviour
     {
         _time = 0;
         _activeButton.gameObject.SetActive(false);
+        _backButtone.gameObject.SetActive(false);
+        _menuButtone.gameObject.SetActive(false);
         while (_time < 1.2f)
         {
             yield return null;
@@ -223,12 +227,16 @@ public class WeaponChooser : MonoBehaviour
         _isSwiping = false;
         if (QueuePosition <= WeaponsData.Count)
             _activeButton.gameObject.SetActive(true);
+        _backButtone.gameObject.SetActive(true);
+        _menuButtone.gameObject.SetActive(true);
 
     }
     private IEnumerator MooveWeapon(Transform startPosition, Transform finishPosition, GameObject weaponToMoove, bool doDestroy)
     {
         _time = 0;
         _activeButton.gameObject.SetActive(false);
+        _backButtone.gameObject.SetActive(false);
+        _menuButtone.gameObject.SetActive(false);
         while (_time < 1.2f)
         {
             yield return null;
@@ -239,6 +247,8 @@ public class WeaponChooser : MonoBehaviour
         _isSwiping = false;
         if (QueuePosition <= WeaponsData.Count)
             _activeButton.gameObject.SetActive(true);
+        _backButtone.gameObject.SetActive(true);
+        _menuButtone.gameObject.SetActive(true);
 
     }
     private void ChangeParametersText()
@@ -247,7 +257,7 @@ public class WeaponChooser : MonoBehaviour
         _fireRateText.text = Math.Round(WeaponsData[QueuePosition - 1].RateOfFire, 2).ToString();
         _accuranceText.text = Math.Round(WeaponsData[QueuePosition - 1].GunSpred, 2).ToString();
         _ammoText.text = WeaponsData[QueuePosition - 1].BulletAmmount.ToString();
-        _reloadingText.text = Math.Round(WeaponsData[QueuePosition - 1].ReloadingTime, 2).ToString() + " sec";
+        _reloadingText.text = Math.Round(WeaponsData[QueuePosition - 1].ReloadingTime, 2).ToString();
         _costText.text = WeaponsData[QueuePosition - 1].GunCoast.ToString();
         _weaponNameText.text = WeaponsData[QueuePosition - 1].GunName.ToString();
         if (WeaponsData[QueuePosition - 1].PurchaseType == PurchaseType.Money)
@@ -272,7 +282,6 @@ public class WeaponChooser : MonoBehaviour
         WeaponsData = _weaponSaveData.NonByedWeapon;
         _activeButton = _buyButtone.gameObject;
         _activeButton.SetActive(true);
-        _buyAndSelectButtoneText.text = "Buy";
         MoneyText.text = _moneyShower.AllMoney.ToString();
         GoldText.text = _moneyShower.AllGold.ToString();
 
@@ -285,7 +294,6 @@ public class WeaponChooser : MonoBehaviour
         WeaponsData = _weaponSaveData.ByedWeapon;
         _activeButton = _selectButtone.gameObject;
         _activeButton.SetActive(true);
-        _buyAndSelectButtoneText.text = "Select";
         MoneyText.text = _moneyShower.AllMoney.ToString();
         GoldText.text = _moneyShower.AllGold.ToString();
 
@@ -294,7 +302,6 @@ public class WeaponChooser : MonoBehaviour
 
     public void DeleteMenu()
     {
-
         foreach (var item in _weaponsMemmoryList)
             Destroy(item.gameObject);
 
@@ -306,6 +313,7 @@ public class WeaponChooser : MonoBehaviour
         _newWeapon = null;
         _oldWeapon = null;
         QueuePosition = 0;
+
     }
     public void SelectWeapone()
     {
@@ -322,6 +330,7 @@ public class WeaponChooser : MonoBehaviour
                 QueuePosition--;
                 ChangeToNextWeapon(true);
                 MoneyText.text = _moneyShower.AllMoney.ToString();
+                _save.SaveGameData();
             }
         }
         else
@@ -332,6 +341,7 @@ public class WeaponChooser : MonoBehaviour
                 QueuePosition--;
                 ChangeToNextWeapon(true);
                 GoldText.text = _moneyShower.AllGold.ToString();
+                _save.SaveGameData();
             }
         }
 

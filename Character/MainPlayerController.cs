@@ -1,24 +1,25 @@
 using Cinemachine;
 using System;
 using System.Collections;
-using UnityEditor.Animations;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using Zenject;
+using UnityEngine.InputSystem;
 
-public class MainPlayerController : MonoBehaviour, IPlayer
+public class MainPlayerController : MonoBehaviour
 {
     [SerializeField] private Transform _turgetTransform;
     [SerializeField] private CharacterController _characterController;
     [SerializeField, Range(0f, 30f)] private float _speed;
     [SerializeField, Range(0f, 100f)] private float _sensetive;
     [SerializeField] private float aimingTime;
-    [SerializeField] private Animator _animator;
+    [SerializeField] private GameObject _animatorGameObject;
     [SerializeField] private Animator _rigAnimator;
     [SerializeField] private PlayerStateMachine _playerStateMachine;
+    [SerializeField] private Canvas _mobileCanvas;
 
     public CinemachineVirtualCamera AimCamera;
     public Transform AimCamTransform;
+    [SerializeField] private Animator _animator;
     public GameStateMachine GameStateMachine { get; private set; }
 
     private CharacterActions _inputActions;
@@ -28,6 +29,9 @@ public class MainPlayerController : MonoBehaviour, IPlayer
     private int _mooveValue;
     private int _shootTrigger;
     private int _reloadingTrigger;
+    private float _aimingCooldown = 5;
+    private bool _canAiming = true;
+    private float saveSpred;
 
     public Gun Gun => _gun;
 
@@ -43,11 +47,25 @@ public class MainPlayerController : MonoBehaviour, IPlayer
         _inputActions.Default.Enable();
         _inputActions.Default.Aiming.performed += StartAiming;
 
+    }
+    private void OnEnable()
+    {
+        if (GameConstans.IsMobile)
+        {
+            _mobileCanvas.enabled = true;
+        }
+    }
+    private void OnDisable()
+    {
+        _mobileCanvas.enabled = false;
+
+    }
+    private void Start()
+    {
         _shootTrigger = Animator.StringToHash("Shoot");
         _reloadingTrigger = Animator.StringToHash("Reload");
         InitStateMachine();
     }
-
     private void InitStateMachine()
     {
         _playerStateMachine.InitStateMachine(_inputActions, _gun, _rigAnimator, _animator, _characterController, _speed);
@@ -55,13 +73,26 @@ public class MainPlayerController : MonoBehaviour, IPlayer
 
     public void AnimateShoot() => _animator.SetTrigger(_shootTrigger);
     public void AnimateReload() => _animator.SetTrigger(_reloadingTrigger);
-    public void SetAnimatorControllerForGun(AnimatorController controller) => _animator.runtimeAnimatorController = controller;
+    public void SetAnimatorControllerForGun(Animator animator)
+    {
 
+        _animator.runtimeAnimatorController = animator.runtimeAnimatorController;
+    }
+
+    private IEnumerator CooldawnAiming()
+    {
+        yield return new WaitForSeconds(_aimingCooldown);
+        _canAiming = true;
+    }
     private void StartAiming(InputAction.CallbackContext context)
     {
-        AimCamera.Priority = 15;
-        StartCoroutine(StartAimingTimer(aimingTime));
-        Time.timeScale = 0.5f;
+        if (_canAiming)
+        {
+            AimCamera.Priority = 15;
+            StartCoroutine(StartAimingTimer(aimingTime));
+            Time.timeScale = 0.5f;
+            _canAiming = false;
+        }
     }
     public void StartAiming(float aimingBonusTime)
     {
@@ -74,16 +105,29 @@ public class MainPlayerController : MonoBehaviour, IPlayer
     private IEnumerator StartAimingTimer(float aimingTime)
     {
 
-        var saveSpred = _gun.GunData.GunSpred;
+        saveSpred = _gun.GunData.GunSpred;
         _gun.GunData.GunSpred = 0;
         yield return new WaitForSeconds(aimingTime);
         AimCamera.Priority = 9;
         Time.timeScale = 1;
         _gun.GunData.GunSpred = saveSpred;
-    }
+        StartCoroutine(CooldawnAiming());
 
+    }
+    public void ResetSpredAndAim()
+    {
+        _gun.GunData.GunSpred = saveSpred;
+        if (Time.timeScale < 1)
+        {
+            AimCamera.Priority = 9;
+            Time.timeScale = 1;
+            _canAiming = true;
+        }
+    }
     private void Rotation()
     {
+        if (GameConstans.IsMobile)
+            _sensetive = 2.5f;
         Vector2 input = _inputActions.Default.Rotate.ReadValue<Vector2>() * Time.deltaTime * _sensetive;
         if (input.x + _turgetTransform.position.x > 15)
             _turgetTransform.position = new Vector3(15, _turgetTransform.position.y, _turgetTransform.position.z);

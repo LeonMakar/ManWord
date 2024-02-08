@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using YG;
 using Zenject;
 
 public class WeaponSaveData : MonoBehaviour
@@ -26,6 +25,8 @@ public class WeaponSaveData : MonoBehaviour
             _money.AllMoney -= weaponData.GunCoast;
         else
             _money.AllGold -= weaponData.GunCoast;
+        _gun.EqipeNewGun(weaponData);
+
     }
 
     public void Loading()

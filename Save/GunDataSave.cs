@@ -17,7 +17,7 @@ public class GunDataSave
     public int ReloadingUpgradeCost;
 
     public int DamageUpStep;
-    public int RateOfFireUpStep;
+    public float RateOfFireUpStep;
     public int SpredUpStep;
     public int AmmoUpStep;
     public int ReloadingUpStep;

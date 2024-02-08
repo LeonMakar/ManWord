@@ -35,6 +35,8 @@ public class BonusSpawner : Spawner
                     _spawnObject = _bonusPool.GetMoneyPool().GetFromPool().gameObject;
                 else if (chance >= BonusSpawnData.ChanceOfBombing.start && chance < BonusSpawnData.ChanceOfBombing.end)
                     _spawnObject = _bonusPool.GetBombingPool().GetFromPool().gameObject;
+                else if (chance >= BonusSpawnData.ChanceOfTurret.start && chance < BonusSpawnData.ChanceOfTurret.end)
+                    _spawnObject = _bonusPool.GetTurretBonusPool().GetFromPool().gameObject;
 
                 _spawnObject.gameObject.SetActive(false);
                 _spawnObject.transform.position = new Vector3(x, _spawnObject.transform.position.y, transform.position.z);

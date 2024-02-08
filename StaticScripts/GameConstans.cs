@@ -7,4 +7,5 @@ public static class GameConstans
     public static Action Bombarding;
     public static int DiffcultyValue;
     public static Action<bool> ActivateTurret;
+    public static bool IsMobile;
 }

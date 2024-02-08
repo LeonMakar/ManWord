@@ -1,7 +1,5 @@
 using System;
-using System.Runtime.CompilerServices;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using Zenject;
 
 public class Gun : MonoBehaviour
@@ -106,7 +104,7 @@ public class Gun : MonoBehaviour
     public void EqipeNewGun(GunData gun)
     {
         GunData = gun;
-        MainPlayerController.SetAnimatorControllerForGun(GunData.AnimatorController);
+        MainPlayerController.SetAnimatorControllerForGun(GunData.Animator);
         SynchronizeWeaponeData();
     }
 

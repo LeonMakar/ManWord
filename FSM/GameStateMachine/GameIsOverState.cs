@@ -22,7 +22,6 @@ public class GameIsOverState : BaseState<GameStateMachine.GameStates>
         _uiMoney.AddIncomeOnGameOver();
         _uiMoney.EarnMoneyText.text = _uiMoney.Money.ToString();
         _uiMoney.EarnGoldText.text = _uiMoney.Gold.ToString();
-        _saveAndLoad.SaveGameData();
     }
 
     public override void ExitFromState()

@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using YG;
 using Zenject;
 
 public class GameStateMachine : StateManager<GameStateMachine.GameStates>
@@ -26,12 +27,13 @@ public class GameStateMachine : StateManager<GameStateMachine.GameStates>
     }
 
     [Inject]
-    private void Cunstruct(EventBus eventBus, EnemyPool enemyPool, SaveAndLoadProcess saveAndLoad, UIMoneyShower uIMoneyShower, BonusePool bonusePool)
+    private void Cunstruct(EventBus eventBus, EnemyPool enemyPool, SaveAndLoadProcess saveAndLoad, UIMoneyShower uIMoneyShower, BonusePool bonusePool, MainPlayerController player)
     {
         GameIsActiveState gameIsActiveState = new GameIsActiveState(GameStates.GameIsActive, _gamePlayCanvas, _enemySpawner,
-            _playerGameObject, eventBus, _menuZombie, enemyPool, uIMoneyShower, _bonusSpawner, bonusePool, _obstacleSpawner,_musicAudio);
+            _playerGameObject, eventBus, _menuZombie, enemyPool, uIMoneyShower, _bonusSpawner, bonusePool,
+            _obstacleSpawner, _musicAudio, saveAndLoad, player);
 
-        GameIsOverState gameIsOverState = new GameIsOverState(GameStates.GameIsOver, _gameOverCanvas, saveAndLoad,uIMoneyShower);
+        GameIsOverState gameIsOverState = new GameIsOverState(GameStates.GameIsOver, _gameOverCanvas, saveAndLoad, uIMoneyShower);
 
         GameIsStopedState gameIsStopedState = new GameIsStopedState(GameStates.GameIsStoped, _gameMainMenuCanvas);
 
@@ -40,6 +42,10 @@ public class GameStateMachine : StateManager<GameStateMachine.GameStates>
         States.Add(GameStates.GameIsStoped, gameIsStopedState);
 
         StartStateMachine(GameStates.GameIsStoped);
+    }
+    private void Start()
+    {
+        GameConstans.IsMobile = YandexGame.EnvironmentData.isMobile;
     }
 
     public void TransitToGameActiveState() => TransitionToNextState(GameStates.GameIsActive);

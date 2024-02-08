@@ -10,16 +10,18 @@ public class SaveAndLoadProcess : MonoBehaviour
     [SerializeField] private List<GunData> _allDefaultGuns;
     private Dictionary<string, GunData> _allGunDataDictionary = new Dictionary<string, GunData>();
 
+
     [Inject]
     private void Construct(UIMoneyShower money, WeaponSaveData weaponSaveData)
     {
         _money = money;
         _weaponSaveData = weaponSaveData;
         AllGunDataDictionaryInitialization();
-
+    }
+    private void Awake()
+    {
         YandexGame.GetDataEvent += Initialize;
     }
-
     private void AllGunDataDictionaryInitialization()
     {
         foreach (var gun in _allDefaultGuns)
@@ -33,13 +35,12 @@ public class SaveAndLoadProcess : MonoBehaviour
 
     public void SaveGameData()
     {
-        YandexGame.savesData.IsFirstSwitchingOn = false;
         YandexGame.savesData.Money = _money.AllMoney;
         YandexGame.savesData.Gold = _money.AllGold;
 
         SaveGunShopAssortment();
-
         YandexGame.SaveProgress();
+        YandexGame.savesData.IsFirstSwitchingOn = false;
     }
 
 

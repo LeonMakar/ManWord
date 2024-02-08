@@ -42,11 +42,11 @@ public class Turret : MonoBehaviour
     }
     private void TuretIsActivated()
     {
-        _coroutineGameObject.StartCoroutine(Firing());
+        StartCoroutine(Firing());
     }
     private void TuretIsDiactivated()
     {
-        _coroutineGameObject.StopAllCoroutines();
+        StopAllCoroutines();
     }
 
     private void DealDamage()

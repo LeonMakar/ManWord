@@ -15,6 +15,9 @@ public class TurretBonus : InteractibleObjects
                 StartCoroutine(TimingBonusDuration(_bonusDuration));
             foreach (var renderer in _meshRenderer)
                 renderer.enabled = false;
+            TryGetComponent(out Collider collider);
+            collider.enabled = false;
+
         }
     }
     public override void Update()
@@ -32,6 +35,8 @@ public class TurretBonus : InteractibleObjects
         foreach (var renderer in _meshRenderer)
             renderer.enabled = true;
         Speed = currentspeed;
+        gameObject.TryGetComponent(out Collider collider);
+        collider.enabled = true;
         ParentObject.gameObject.SetActive(false);
 
     }

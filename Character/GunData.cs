@@ -1,7 +1,4 @@
-using Newtonsoft.Json;
 using System;
-using Unity.VisualScripting;
-using UnityEditor.Animations;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "GunData", menuName = "Gun/GunData"), Serializable]
@@ -13,12 +10,12 @@ public class GunData : ScriptableObject
     public float GunSpred;
     public int BulletAmmount;
     public float ReloadingTime;
-    public PurchaseType PurchaseType;
+    public PurchaseType PurchaseType; 
     [field: SerializeField] public int GunCoast { get; private set; }
     [field: SerializeField] public AudioClip ShootSound { get; private set; }
     [field: SerializeField] public AudioClip ReloadingSound { get; private set; }
     [field: SerializeField] public GameObject GunPrefab { get; private set; }
-    [field: SerializeField] public AnimatorController AnimatorController { get; private set; }
+    [field: SerializeField] public Animator Animator{ get; private set; }
 
     [Space(10), Header("Upgrade values")]
     [SerializeField] private int _damageUpgradeValue;
@@ -37,7 +34,7 @@ public class GunData : ScriptableObject
 
     [Space(10), Header("Upgrade step")]
     [HideInInspector] public int DamageUpStep;
-    [HideInInspector] public int RateOfFireUpStep;
+    [HideInInspector] public float RateOfFireUpStep;
     [HideInInspector] public int SpredUpStep;
     [HideInInspector] public int AmmoUpStep;
     [HideInInspector] public int ReloadingUpStep;

@@ -119,6 +119,8 @@ public abstract class Zombie : MonoBehaviour
         RandomizeZombieHealth();
         CalculateMoneyHolding();
         IsStartDying= false;
+        gameObject.layer = 6;
+
     }
     private void ChangeZombieScin()
     {
@@ -189,6 +191,7 @@ public abstract class Zombie : MonoBehaviour
     private void Deading()
     {
         Health = 0;
+        gameObject.layer = 1;
         if (!_isCrowling)
             _animator.SetTrigger(_isDied);
         else
@@ -208,5 +211,4 @@ public abstract class Zombie : MonoBehaviour
     {
         CharacterController.Move(Vector3.back * Speed * Time.deltaTime);
     }
-
 }

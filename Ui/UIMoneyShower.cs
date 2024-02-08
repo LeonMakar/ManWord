@@ -13,6 +13,7 @@ public class UIMoneyShower : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI _moneyText;
     [SerializeField] private TextMeshProUGUI _goldText;
+    [SerializeField] private GoldChanger _goldChanger;
 
     [field: SerializeField] public TextMeshProUGUI EarnMoneyText { get; private set; }
     [field: SerializeField] public TextMeshProUGUI EarnGoldText { get; private set; }
@@ -22,15 +23,13 @@ public class UIMoneyShower : MonoBehaviour
         AllGold = YandexGame.savesData.Gold;
         YandexGame.RewardVideoEvent += Reward;
         YandexGame.PurchaseSuccessEvent += AddGoldForYAN;
-        AllMoney = 10000;
-        AllGold = 10000;
-
 
     }
 
     private void AddGoldForYAN(string obj)
     {
         AllGold += 500;
+        _goldChanger.InitGOldAndMoneyCount();
     }
     public void ResetGoldAndMoneyINRestart()
     {

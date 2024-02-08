@@ -16,10 +16,12 @@ public class GameIsActiveState : BaseState<GameStateMachine.GameStates>
     private BonusePool _bonusPool;
     private Spawner _obstacleSpawner;
     private AudioSource _music;
+    private SaveAndLoadProcess _saveAndLoad;
+    private MainPlayerController _player;
 
     public GameIsActiveState(GameStateMachine.GameStates key, Canvas gamePlayCanvas, Spawner enemySpawner, GameObject playerGameObject,
        EventBus eventBus, GameObject[] menuZombie, EnemyPool enemyPool, UIMoneyShower uiMoney, Spawner bonusSpawner, BonusePool bonusePool,
-       Spawner obstacleSpawner, AudioSource musicAudio) : base(key)
+       Spawner obstacleSpawner, AudioSource musicAudio, SaveAndLoadProcess save, MainPlayerController player) : base(key)
     {
         _gamePlayCanvas = gamePlayCanvas;
         _enemySpawner = enemySpawner;
@@ -32,6 +34,8 @@ public class GameIsActiveState : BaseState<GameStateMachine.GameStates>
         _bonusPool = bonusePool;
         _obstacleSpawner = obstacleSpawner;
         _music = musicAudio;
+        _saveAndLoad = save;
+        _player = player;
     }
     public override void EnterToState()
     {
@@ -50,6 +54,7 @@ public class GameIsActiveState : BaseState<GameStateMachine.GameStates>
         _obstacleSpawner.StartSpawning();
         _obstacleSpawner.SetGameActivity(true);
         _music.volume = 0.5f;
+
     }
 
     public override void ExitFromState()
@@ -67,7 +72,8 @@ public class GameIsActiveState : BaseState<GameStateMachine.GameStates>
         _obstacleSpawner.StopAllCoroutines();
         _bonusPool.RemooveAllObjectFromScene();
         _music.volume = 1;
-
+        _player.ResetSpredAndAim();
+        _saveAndLoad.SaveGameData();
     }
 
     public override void UpdateState()
