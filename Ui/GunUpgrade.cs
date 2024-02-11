@@ -104,7 +104,6 @@ public class GunUpgrade : MonoBehaviour
                 break;
         }
     }
-
     private void ChangeValuesOfParameter(ref int upgradeCost, TextMeshProUGUI textCost, float costMultiplayer, TextMeshProUGUI textValue, ref float parameter)
     {
         _money.AllMoney -= upgradeCost;

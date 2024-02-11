@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using Zenject;
 
 public abstract class Zombie : MonoBehaviour
@@ -51,6 +50,7 @@ public abstract class Zombie : MonoBehaviour
     private int _isDied;
     private int _isStandUp;
     private bool _isCrowling;
+    public bool CanDisableHealthBar;
 
     #region Initialization
     [Inject]
@@ -107,7 +107,7 @@ public abstract class Zombie : MonoBehaviour
             Health = 0;
             _moneyShower.ChangeMoneyValue(HoldedMoney);
             DethActions();
-            IsStartDying=true;
+            IsStartDying = true;
         }
     }
     #endregion
@@ -118,7 +118,7 @@ public abstract class Zombie : MonoBehaviour
         ChangeZombieScin();
         RandomizeZombieHealth();
         CalculateMoneyHolding();
-        IsStartDying= false;
+        IsStartDying = false;
         gameObject.layer = 6;
 
     }
@@ -151,27 +151,8 @@ public abstract class Zombie : MonoBehaviour
     #region HealthBarConnection
     public void OnUnderAim()
     {
-        if (_healthBar.IsHealthBarInvisible())
-        {
-            if (!_healthBar.EnemyOnUnderAim)
-                StartCoroutine(_healthBar?.SetOnHelthBar());
-        }
-
-        if (_canChangeHealthBar)
-        {
-            _canChangeHealthBar = false;
-            _healthBar.EnemyOnUnderAim = true;
-            _healthBar.SetNewHealthBarValue(ZombieName.ZombieName, _maxHealthAfterRandomizing, Health);
-            StartCoroutine(CanChangeHealBarValues());
-        }
-
+        _healthBar.SetNewHealthBarValue(ZombieName.ZombieName, _maxHealthAfterRandomizing, Health);
     }
-    private IEnumerator CanChangeHealBarValues()
-    {
-        yield return new WaitForSeconds(2f);
-        _canChangeHealthBar = true;
-    }
-
     #endregion
 
 

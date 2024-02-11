@@ -16,6 +16,7 @@ public class GameStateMachine : StateManager<GameStateMachine.GameStates>
     [SerializeField] private GameObject _playerGameObject;
     [SerializeField] private GameObject[] _menuZombie;
     [SerializeField] private AudioSource _musicAudio;
+    [SerializeField] private GameOverADS _gameOverADS;
 
 
 
@@ -33,7 +34,7 @@ public class GameStateMachine : StateManager<GameStateMachine.GameStates>
             _playerGameObject, eventBus, _menuZombie, enemyPool, uIMoneyShower, _bonusSpawner, bonusePool,
             _obstacleSpawner, _musicAudio, saveAndLoad, player);
 
-        GameIsOverState gameIsOverState = new GameIsOverState(GameStates.GameIsOver, _gameOverCanvas, saveAndLoad, uIMoneyShower);
+        GameIsOverState gameIsOverState = new GameIsOverState(GameStates.GameIsOver, _gameOverCanvas, saveAndLoad, uIMoneyShower,_gameOverADS);
 
         GameIsStopedState gameIsStopedState = new GameIsStopedState(GameStates.GameIsStoped, _gameMainMenuCanvas);
 

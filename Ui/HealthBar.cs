@@ -1,7 +1,6 @@
+using System;
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,14 +13,19 @@ public class HealthBar : MonoBehaviour
 
     [SerializeField] private RectTransform _rectTransform;
     bool _coroutineIsStarted = false;
+    private bool _isOnAim;
+    private bool _isGameObjectActive;
 
 
-    public bool CanSwitchOff = true;
-    public bool EnemyOnUnderAim = false;
-
-    private void Start()
+    private void OnEnable()
     {
-        StartCoroutine(SetHealthBarOff());
+        StartCoroutine(SwitchOffBar());
+        _coroutineIsStarted = false;
+
+    }
+    private void OnDisable()
+    {
+        StopAllCoroutines();
     }
     public void ChangeSliderValues(float maxValue, float minValue, float currentValue, float Damage)
     {
@@ -30,7 +34,7 @@ public class HealthBar : MonoBehaviour
         _slider.value = currentValue;
         _healthText.text = $"{currentValue}/{maxValue}";
 
-        if (!_coroutineIsStarted)
+        if (!_coroutineIsStarted && _isGameObjectActive)
             StartCoroutine(ShowDamage(Damage));
     }
     private IEnumerator ShowDamage(float Damage)
@@ -46,52 +50,37 @@ public class HealthBar : MonoBehaviour
             yield return null;
         }
         _coroutineIsStarted = false;
+        _isOnAim = false;
+
     }
 
     public void SetNewHealthBarValue(string zombieName, float maxHealth, float currentHelath)
     {
+        if (!gameObject.activeSelf)
+        {
+            gameObject.SetActive(true);
+            _isGameObjectActive = true;
+        }
         _enemyName.text = zombieName;
         _slider.maxValue = maxHealth;
         _slider.value = currentHelath;
         _healthText.text = $"{currentHelath}/{maxHealth}";
+        _isOnAim = true;
+
     }
-    public IEnumerator SetOnHelthBar()
-    {
-        EnemyOnUnderAim = true;
-        float time = 0;
-        while (_rectTransform.anchoredPosition.y > -50)
-        {
-            time += Time.deltaTime;
-            _rectTransform.anchoredPosition = new Vector2(_rectTransform.anchoredPosition.x, Mathf.Lerp(100, -50, time));
-            yield return null;
-        }
-    }
-    public bool IsHealthBarInvisible()
-    {
-        if (_rectTransform.anchoredPosition.y >= 100)
-            return true;
-        else
-            return false;
-    }
-    public IEnumerator SetHealthBarOff()
+
+    private IEnumerator SwitchOffBar()
     {
         while (true)
         {
-            EnemyOnUnderAim = false;
-            yield return new WaitForSeconds(3);
-            if (!EnemyOnUnderAim)
+            _isOnAim = false;
+            yield return new WaitForSeconds(2);
+            if (!_isOnAim)
             {
-                float time = 0;
-                while (_rectTransform.anchoredPosition.y < 100)
-                {
-                    time += Time.deltaTime;
-                    _rectTransform.anchoredPosition = new Vector2(_rectTransform.anchoredPosition.x, Mathf.Lerp(-50, 100, time));
-                    yield return null;
-                }
+                gameObject.SetActive(false);
+                _isGameObjectActive = false;
+
             }
         }
-
-
     }
-
 }

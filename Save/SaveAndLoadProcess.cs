@@ -39,8 +39,8 @@ public class SaveAndLoadProcess : MonoBehaviour
         YandexGame.savesData.Gold = _money.AllGold;
 
         SaveGunShopAssortment();
-        YandexGame.SaveProgress();
         YandexGame.savesData.IsFirstSwitchingOn = false;
+        YandexGame.SaveProgress();
     }
 
 

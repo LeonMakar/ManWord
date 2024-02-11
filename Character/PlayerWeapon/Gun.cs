@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using Zenject;
 
@@ -53,7 +54,7 @@ public class Gun : MonoBehaviour
 
     #region Initialization
     [Inject]
-    private void Construct(MainPlayerController mainPlayerController, GunTrail gunTrail, EventBus eventBus, CharacterActions inputActions,WeaponSaveData weaponSaveData)
+    private void Construct(MainPlayerController mainPlayerController, GunTrail gunTrail, EventBus eventBus, CharacterActions inputActions, WeaponSaveData weaponSaveData)
     {
         MainPlayerController = mainPlayerController;
         GunTrail = gunTrail;
