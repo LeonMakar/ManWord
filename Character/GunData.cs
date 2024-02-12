@@ -10,12 +10,12 @@ public class GunData : ScriptableObject
     public float GunSpred;
     public int BulletAmmount;
     public float ReloadingTime;
-    public PurchaseType PurchaseType; 
+    public PurchaseType PurchaseType;
     [field: SerializeField] public int GunCoast { get; private set; }
     [field: SerializeField] public AudioClip ShootSound { get; private set; }
     [field: SerializeField] public AudioClip ReloadingSound { get; private set; }
     [field: SerializeField] public GameObject GunPrefab { get; private set; }
-    [field: SerializeField] public Animator Animator{ get; private set; }
+    [field: SerializeField] public Animator Animator { get; private set; }
 
     [Space(10), Header("Upgrade values")]
     [SerializeField] private int _damageUpgradeValue;
@@ -33,11 +33,11 @@ public class GunData : ScriptableObject
     public int ReloadingUpgradeCost;
 
     [Space(10), Header("Upgrade step")]
-    [HideInInspector] public int DamageUpStep;
-    [HideInInspector] public float RateOfFireUpStep;
-    [HideInInspector] public int SpredUpStep;
-    [HideInInspector] public int AmmoUpStep;
-    [HideInInspector] public int ReloadingUpStep;
+    public int DamageUpStep;
+    public float RateOfFireUpStep;
+    public int SpredUpStep;
+    public int AmmoUpStep;
+    public int ReloadingUpStep;
 
     [field: SerializeField, Space(10)] public float CostMultiplyIndex { get; private set; }
 

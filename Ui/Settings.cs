@@ -4,6 +4,7 @@ using UnityEngine.Audio;
 public class Settings : MonoBehaviour
 {
     [SerializeField] private AudioMixer audioMixer;
+    [SerializeField] private MainPlayerController _mainPlayerController;
 
     public void ToggleMusic(bool value)
     {
@@ -34,5 +35,12 @@ public class Settings : MonoBehaviour
         audioMixer.SetFloat("Master", volume);
         PlayerPrefs.SetFloat("Master", value);
 
+    }
+
+    public void ChangeMauseSensetive(float value)
+    {
+        var sensetive = Mathf.Lerp(0.5f, 2.5f, value);
+        Debug.Log(sensetive);
+       _mainPlayerController.Sensetive = sensetive;
     }
 }

@@ -10,7 +10,7 @@ public class MainPlayerController : MonoBehaviour
     [SerializeField] private Transform _turgetTransform;
     [SerializeField] private CharacterController _characterController;
     [SerializeField, Range(0f, 30f)] private float _speed;
-    [SerializeField, Range(0f, 100f)] private float _sensetive;
+    [Range(0f, 100f)] public float Sensetive;
     [SerializeField] private float aimingTime;
     [SerializeField] private GameObject _animatorGameObject;
     [SerializeField] private Animator _rigAnimator;
@@ -30,7 +30,7 @@ public class MainPlayerController : MonoBehaviour
     private int _shootTrigger;
     private int _reloadingTrigger;
     private float _aimingCooldown = 5;
-    private bool _canAiming = true;
+    private bool _canAiming = false;
     private float saveSpred;
 
     public Gun Gun => _gun;
@@ -54,10 +54,13 @@ public class MainPlayerController : MonoBehaviour
         {
             _mobileCanvas.enabled = true;
         }
+        _canAiming = true;
+        
     }
     private void OnDisable()
     {
         _mobileCanvas.enabled = false;
+        _canAiming = true;
 
     }
     private void Start()
@@ -127,8 +130,8 @@ public class MainPlayerController : MonoBehaviour
     private void Rotation()
     {
         if (GameConstans.IsMobile)
-            _sensetive = 2.5f;
-        Vector2 input = _inputActions.Default.Rotate.ReadValue<Vector2>() * Time.deltaTime * _sensetive;
+            Sensetive = 2.5f;
+        Vector2 input = _inputActions.Default.Rotate.ReadValue<Vector2>() * Time.deltaTime * Sensetive;
         if (input.x + _turgetTransform.position.x > 15)
             _turgetTransform.position = new Vector3(15, _turgetTransform.position.y, _turgetTransform.position.z);
         else if (input.x + _turgetTransform.position.x < -15)

@@ -65,6 +65,7 @@ public class WeaponChooser : MonoBehaviour
     private Action<bool> _deleteGun;
     public static Action Swipe;
     private SaveAndLoadProcess _save;
+    private bool _isSelectMenu;
 
     [Inject]
     private void Construct(Gun gun, WeaponSaveData weaponSaveData, UIMoneyShower moneyShower, SaveAndLoadProcess save)
@@ -229,7 +230,11 @@ public class WeaponChooser : MonoBehaviour
             _activeButton.gameObject.SetActive(true);
         _backButtone.gameObject.SetActive(true);
         _menuButtone.gameObject.SetActive(true);
-
+        if (_isSelectMenu)
+            if (WeaponsData[QueuePosition - 1].GunName == _weaponSaveData.DefoltGun.GunName)
+                _selectButtone.gameObject.SetActive(false);
+            else
+                _selectButtone.gameObject.SetActive(true);
     }
     private IEnumerator MooveWeapon(Transform startPosition, Transform finishPosition, GameObject weaponToMoove, bool doDestroy)
     {
@@ -249,6 +254,11 @@ public class WeaponChooser : MonoBehaviour
             _activeButton.gameObject.SetActive(true);
         _backButtone.gameObject.SetActive(true);
         _menuButtone.gameObject.SetActive(true);
+        if (_isSelectMenu)
+            if (WeaponsData[QueuePosition - 1].GunName == _weaponSaveData.DefoltGun.GunName)
+                _selectButtone.gameObject.SetActive(false);
+            else
+                _selectButtone.gameObject.SetActive(true);
 
     }
     private void ChangeParametersText()
@@ -270,7 +280,6 @@ public class WeaponChooser : MonoBehaviour
             _priceTypeMoney.SetActive(false);
             _priceTypeGold.SetActive(true);
         }
-
     }
     #endregion
 
@@ -284,7 +293,7 @@ public class WeaponChooser : MonoBehaviour
         _activeButton.SetActive(true);
         MoneyText.text = _moneyShower.AllMoney.ToString();
         GoldText.text = _moneyShower.AllGold.ToString();
-
+        _isSelectMenu = false;
 
     }
     public void SetMenuAsSelectingMenu()
@@ -296,7 +305,7 @@ public class WeaponChooser : MonoBehaviour
         _activeButton.SetActive(true);
         MoneyText.text = _moneyShower.AllMoney.ToString();
         GoldText.text = _moneyShower.AllGold.ToString();
-
+        _isSelectMenu = true;
     }
     #endregion
 
@@ -319,6 +328,7 @@ public class WeaponChooser : MonoBehaviour
     {
         _gun.EqipeNewGun(WeaponsData[QueuePosition - 1]);
         _weaponSaveData.SetNewDefaultGun(WeaponsData[QueuePosition - 1]);
+        _selectButtone.gameObject.SetActive(false);
     }
     public void BuyWeapon()
     {

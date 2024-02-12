@@ -33,11 +33,13 @@ public class GunUpgrade : MonoBehaviour
     [SerializeField] private WeaponChooser _weaponChooser;
     [SerializeField] private WeaponSaveData _weaponSaveData;
     private UIMoneyShower _money;
+    private SaveAndLoadProcess _save;
 
     [Inject]
-    private void Construct(UIMoneyShower money)
+    private void Construct(UIMoneyShower money, SaveAndLoadProcess save)
     {
         _money = money;
+        _save = save;
     }
 
     public void Upgrade(string parameterToUpgrade)
@@ -103,6 +105,7 @@ public class GunUpgrade : MonoBehaviour
                 }
                 break;
         }
+        _save.SaveGameData();
     }
     private void ChangeValuesOfParameter(ref int upgradeCost, TextMeshProUGUI textCost, float costMultiplayer, TextMeshProUGUI textValue, ref float parameter)
     {
