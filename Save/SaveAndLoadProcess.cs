@@ -51,6 +51,7 @@ public class SaveAndLoadProcess : MonoBehaviour
 
         _money.Loading();
         _weaponSaveData.Loading();
+        YandexGame.GameReadyAPI();
     }
 
     private void LoadGunShopAssortment()

@@ -54,6 +54,7 @@ public class GameIsActiveState : BaseState<GameStateMachine.GameStates>
         _obstacleSpawner.StartSpawning();
         _obstacleSpawner.SetGameActivity(true);
         _music.volume = 0.5f;
+        Cursor.lockState = CursorLockMode.Locked;
 
     }
 
@@ -73,7 +74,8 @@ public class GameIsActiveState : BaseState<GameStateMachine.GameStates>
         _bonusPool.RemooveAllObjectFromScene();
         _music.volume = 1;
         _player.ResetSpredAndAim();
-        _saveAndLoad.SaveGameData();
+        Cursor.lockState = CursorLockMode.None;
+
     }
 
     public override void UpdateState()

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using Zenject;
@@ -101,10 +102,15 @@ public class GunUpgrade : MonoBehaviour
                     gunData.ReloadingUpStep++;
                     if (gunData.ReloadingUpStep >= 5)
                         RemoveSprecificIcon(ReloadingTimeUpgrade);
-
                 }
                 break;
         }
+        StopAllCoroutines();
+        StartCoroutine(WaitTwoSecond());
+    }
+    private IEnumerator WaitTwoSecond()
+    {
+        yield return new WaitForSeconds(1);
         _save.SaveGameData();
     }
     private void ChangeValuesOfParameter(ref int upgradeCost, TextMeshProUGUI textCost, float costMultiplayer, TextMeshProUGUI textValue, ref float parameter)
