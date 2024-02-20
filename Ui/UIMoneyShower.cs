@@ -50,6 +50,8 @@ public class UIMoneyShower : MonoBehaviour
                 EarnGoldText.text = (Gold + Gold).ToString();
                 break;
         }
+
+        _saveAndLoadProcess.SaveGameData();
     }
 
     public void AddIncomeOnGameOver()

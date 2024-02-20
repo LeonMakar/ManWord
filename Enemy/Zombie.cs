@@ -51,6 +51,8 @@ public abstract class Zombie : MonoBehaviour
     private int _isStandUp;
     private bool _isCrowling;
     public bool CanDisableHealthBar;
+    private SkinnedMeshRenderer _meshRenderer;
+    private MaterialPropertyBlock _materialPropertuBlock;
 
     #region Initialization
     [Inject]
@@ -67,6 +69,8 @@ public abstract class Zombie : MonoBehaviour
         _isDied = Animator.StringToHash("isDead");
         _isStandUp = Animator.StringToHash("StandUp");
         CalculateMoneyHolding();
+        _materialPropertuBlock = new MaterialPropertyBlock();
+
     }
     #endregion
 
@@ -127,6 +131,8 @@ public abstract class Zombie : MonoBehaviour
         _scinNumber = UnityEngine.Random.Range(0, _skins.Count);
         _skins[_scinNumber].SetActive(true);
         ActiveScin = _skins[_scinNumber];
+        _meshRenderer = ActiveScin.transform.GetComponent<SkinnedMeshRenderer>();
+        _meshRenderer.SetPropertyBlock(_materialPropertuBlock);
     }
 
     private void RandomizeZombieHealth()

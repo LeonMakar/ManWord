@@ -105,12 +105,13 @@ public class GunUpgrade : MonoBehaviour
                 }
                 break;
         }
-        StopAllCoroutines();
-        StartCoroutine(WaitTwoSecond());
+        //StopAllCoroutines();
+        //StartCoroutine(WaitTwoSecond());
+        _save.SaveGameData();
     }
     private IEnumerator WaitTwoSecond()
     {
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(0.3f);
         _save.SaveGameData();
     }
     private void ChangeValuesOfParameter(ref int upgradeCost, TextMeshProUGUI textCost, float costMultiplayer, TextMeshProUGUI textValue, ref float parameter)

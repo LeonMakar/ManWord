@@ -1,7 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using Zenject;
 
 public abstract class Spawner : MonoBehaviour
 {
@@ -15,6 +13,7 @@ public abstract class Spawner : MonoBehaviour
 
     public void StartSpawning()
     {
+        StopAllCoroutines();
         StartCoroutine(Spawning());
     }
 

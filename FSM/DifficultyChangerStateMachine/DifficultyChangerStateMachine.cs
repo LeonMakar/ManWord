@@ -64,6 +64,10 @@ public partial class DifficultyChangerStateMachine : StateManager<DifficultyChan
         StartStateMachine(DificultyStage.SuperEasy);
     }
 
+    public void SetStartDifficulty()
+    {
+        StartStateMachine(DificultyStage.SuperEasy);
+    }
     private IEnumerator StartVanish()
     {
         Color textColor = _wavePassedText.color;

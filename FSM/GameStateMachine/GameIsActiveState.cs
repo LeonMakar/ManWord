@@ -18,10 +18,11 @@ public class GameIsActiveState : BaseState<GameStateMachine.GameStates>
     private AudioSource _music;
     private SaveAndLoadProcess _saveAndLoad;
     private MainPlayerController _player;
+    private DifficultyChangerStateMachine _difficultyMachine;
 
     public GameIsActiveState(GameStateMachine.GameStates key, Canvas gamePlayCanvas, Spawner enemySpawner, GameObject playerGameObject,
        EventBus eventBus, GameObject[] menuZombie, EnemyPool enemyPool, UIMoneyShower uiMoney, Spawner bonusSpawner, BonusePool bonusePool,
-       Spawner obstacleSpawner, AudioSource musicAudio, SaveAndLoadProcess save, MainPlayerController player) : base(key)
+       Spawner obstacleSpawner, AudioSource musicAudio, SaveAndLoadProcess save, MainPlayerController player, DifficultyChangerStateMachine difficultyChangerStateMachine) : base(key)
     {
         _gamePlayCanvas = gamePlayCanvas;
         _enemySpawner = enemySpawner;
@@ -36,9 +37,12 @@ public class GameIsActiveState : BaseState<GameStateMachine.GameStates>
         _music = musicAudio;
         _saveAndLoad = save;
         _player = player;
+        _difficultyMachine = difficultyChangerStateMachine;
     }
     public override void EnterToState()
     {
+        GameConstans.DiffcultyValue = 0;
+        _difficultyMachine.SetStartDifficulty();
         _gamePlayCanvas.enabled = true;
         _uiMoney.ResetGoldAndMoneyINRestart();
         _enemySpawner.SetGameActivity(true);
@@ -55,13 +59,13 @@ public class GameIsActiveState : BaseState<GameStateMachine.GameStates>
         _obstacleSpawner.SetGameActivity(true);
         _music.volume = 0.5f;
         Cursor.lockState = CursorLockMode.Locked;
-
     }
 
     public override void ExitFromState()
     {
         _gamePlayCanvas.enabled = false;
         _enemySpawner.SetGameActivity(false);
+        _enemySpawner.StopAllCoroutines();
         _playerGameObject.SetActive(false);
         _eventBus.Invoke(new StartGameSignal(false));
         foreach (var zombie in _menuZombie)

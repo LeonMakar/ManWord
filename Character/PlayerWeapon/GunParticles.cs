@@ -15,6 +15,7 @@ public class GunParticles : MonoBehaviour
     private GunParticlesPool _gunHitPool;
     private TrailPool _gunTrailPool;
     public GameObject TrailGameObject { get; private set; }
+    [SerializeField] private Coroutine _coroutineObject;
 
 
     public void InitializeGunParticlePools()
@@ -31,20 +32,20 @@ public class GunParticles : MonoBehaviour
         var smokeParticles = _gunShootSmokePool.GetFromPool();
         smokeParticles.transform.position = ShootParticle.transform.position;
         smokeParticles.Play();
-        StartCoroutine(FinishParticleShown(smokeParticles, smokeParticles.main.duration));
+        _coroutineObject.StartCoroutine(FinishParticleShown(smokeParticles, smokeParticles.main.duration));
 
         //Bullet
         var bulletParticle = _gunBulletPool.GetFromPool();
         bulletParticle.transform.position = BulletParticle.transform.position;
         bulletParticle.transform.rotation = BulletParticle.transform.rotation;
-        StartCoroutine(FinishParticleShown(bulletParticle, bulletParticle.main.duration));
+        _coroutineObject.StartCoroutine(FinishParticleShown(bulletParticle, bulletParticle.main.duration));
     }
     public void ActivateHitParticles(RaycastHit hit)
     {
         var impactParticle = _gunHitPool.GetFromPool();
         impactParticle.transform.position = hit.point;
         impactParticle.transform.rotation = Quaternion.identity;
-        StartCoroutine(FinishParticleShown(impactParticle, impactParticle.main.duration));
+        _coroutineObject.StartCoroutine(FinishParticleShown(impactParticle, impactParticle.main.duration));
     }
 
     public IEnumerator FinishParticleShown(ParticleSystem particle, float waitDuration)
@@ -56,7 +57,7 @@ public class GunParticles : MonoBehaviour
 
     public void ActivateTrailParticles(Vector3 hitPosition)
     {
-        StartCoroutine(StartFrowTrail(hitPosition));
+        _coroutineObject.StartCoroutine(StartFrowTrail(hitPosition));
     }
 
     private IEnumerator StartFrowTrail(Vector3 hitPosition)
