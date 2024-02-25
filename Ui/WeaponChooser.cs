@@ -14,26 +14,20 @@ public class WeaponChooser : MonoBehaviour
     //Parameters Fields//
     [Header("Gun Parameters")]
     [SerializeField] GameObject _allGunParameters;
-    [SerializeField] TextMeshProUGUI _damageText;
-    [SerializeField] TextMeshProUGUI _fireRateText;
-    [SerializeField] TextMeshProUGUI _accuranceText;
-    [SerializeField] TextMeshProUGUI _ammoText;
-    [SerializeField] TextMeshProUGUI _reloadingText;
     [SerializeField] TextMeshProUGUI _costText;
     [SerializeField] TextMeshProUGUI _weaponNameText;
 
     [Header("Button")]
-    [SerializeField] TextMeshProUGUI _buyAndSelectButtoneText;
     [SerializeField] Button _buyButtone;
     [SerializeField] Button _selectButtone;
     [SerializeField] Button _menuButtone;
     [SerializeField] Button _backButtone;
-
     private GameObject _activeButton;
 
 
 
-    [Space(20)]
+
+    [Space(20), Header("GunPrefab Positions")]
     [field: SerializeField] public List<GunData> WeaponsData = new List<GunData>();
     [SerializeField] Transform _weaponStartPosition;
     [SerializeField] Transform _weaponFinishPosition;
@@ -46,37 +40,42 @@ public class WeaponChooser : MonoBehaviour
     [field: SerializeField] public TextMeshProUGUI MoneyText { get; private set; }
     [field: SerializeField] public TextMeshProUGUI GoldText { get; private set; }
 
+    [Space(20), Header("GunPrice Types GO")]
     [SerializeField] private GameObject _priceTypeGold;
     [SerializeField] private GameObject _priceTypeMoney;
 
 
 
+    public int QueuePosition { get; private set; }
     public GunData _choosenGun { get; private set; }
+    public static Action Swipe;
+
+    //----------Services-----------// 
+    public ViewModel ViewModel;
 
     private GameObject _oldWeapon;
     private GameObject _newWeapon;
     private List<GameObject> _weaponsMemmoryList = new List<GameObject>();
-    public int QueuePosition { get; private set; }
-    private float _time;
     private Gun _gun;
     private WeaponSaveData _weaponSaveData;
     private UIMoneyShower _moneyShower;
-    private bool _isSwiping;
     private Action<bool> _deleteGun;
-    public static Action Swipe;
     private SaveAndLoadProcess _save;
+
+    private float _time;
+    private bool _isSwiping;
     private bool _isSelectMenu;
 
     [Inject]
-    private void Construct(Gun gun, WeaponSaveData weaponSaveData, UIMoneyShower moneyShower, SaveAndLoadProcess save)
+    private void Construct(Gun gun, WeaponSaveData weaponSaveData, UIMoneyShower moneyShower, SaveAndLoadProcess save,ViewModel viewModel)
     {
         _gun = gun;
         _weaponSaveData = weaponSaveData;
         _moneyShower = moneyShower;
         _deleteGun += DeleteGunFromList;
         _save = save;
+        ViewModel = viewModel;
     }
-
     #region WeaponeSwipeMooving
 
     public void ChangeToNextWeapon()
@@ -99,6 +98,7 @@ public class WeaponChooser : MonoBehaviour
             if (QueuePosition != 0)
                 Swipe.Invoke();
             QueuePosition++;
+            ViewModel.OnSwipeButtoneClicked(WeaponsData[QueuePosition - 1]);
             ChangeParametersText();
         }
         else if (QueuePosition == WeaponsData.Count && !_isSwiping)
@@ -139,6 +139,7 @@ public class WeaponChooser : MonoBehaviour
             if (QueuePosition != 0)
                 Swipe.Invoke();
             QueuePosition++;
+            ViewModel.OnSwipeButtoneClicked(WeaponsData[QueuePosition-1]);
             ChangeParametersText();
             _deleteGun.Invoke(doIDeleteByuedGun);
         }
@@ -189,6 +190,7 @@ public class WeaponChooser : MonoBehaviour
 
                 }
                 QueuePosition--;
+                ViewModel.OnSwipeButtoneClicked(WeaponsData[QueuePosition-1]);
                 ChangeParametersText();
                 Swipe.Invoke();
             }
@@ -263,11 +265,7 @@ public class WeaponChooser : MonoBehaviour
     }
     private void ChangeParametersText()
     {
-        _damageText.text = WeaponsData[QueuePosition - 1].Damage.ToString();
-        _fireRateText.text = Math.Round(WeaponsData[QueuePosition - 1].RateOfFire, 2).ToString();
-        _accuranceText.text = Math.Round(WeaponsData[QueuePosition - 1].GunSpred, 2).ToString();
-        _ammoText.text = WeaponsData[QueuePosition - 1].BulletAmmount.ToString();
-        _reloadingText.text = Math.Round(WeaponsData[QueuePosition - 1].ReloadingTime, 2).ToString();
+
         _costText.text = WeaponsData[QueuePosition - 1].GunCoast.ToString();
         _weaponNameText.text = WeaponsData[QueuePosition - 1].GunName.ToString();
         if (WeaponsData[QueuePosition - 1].PurchaseType == PurchaseType.Money)

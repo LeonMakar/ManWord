@@ -8,7 +8,7 @@ public class TurretBonus : InteractibleObjects
     [SerializeField] private MeshRenderer[] _meshRenderer;
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == GameConstans.PlayerTag)
+        if (other.tag == GameConstans.PLAYER_TAG)
         {
             other.transform.TryGetComponent(out MainPlayerController controller);
             if (controller != null)
@@ -27,11 +27,11 @@ public class TurretBonus : InteractibleObjects
     }
     private IEnumerator TimingBonusDuration(float duration)
     {
-        GameConstans.ActivateTurret.Invoke(true);
+        GameConstans.ON_ACCTIVATE_TURRET.Invoke(true);
         var currentspeed = Speed;
         Speed = 0;
         yield return new WaitForSeconds(duration);
-        GameConstans.ActivateTurret.Invoke(false);
+        GameConstans.ON_ACCTIVATE_TURRET.Invoke(false);
         foreach (var renderer in _meshRenderer)
             renderer.enabled = true;
         Speed = currentspeed;

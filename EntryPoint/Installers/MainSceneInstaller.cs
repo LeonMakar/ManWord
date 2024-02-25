@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 
@@ -15,6 +13,10 @@ public class MainSceneInstaller : MonoInstaller, IInitializable
     [SerializeField] private UIMoneyShower _moneyShower;
     [SerializeField] private GameStateMachine _gameStateMachine;
     [SerializeField] private SaveAndLoadProcess _saveAndLoadProcess;
+    [SerializeField] private View _view;
+
+    private DefaultViewModel _defaultViewModel = new();
+
 
     public override void InstallBindings()
     {
@@ -32,6 +34,27 @@ public class MainSceneInstaller : MonoInstaller, IInitializable
         BindMoneyShower();
         BindGameStateMachine();
         BindSaveAndLoadPrecess();
+        BindInstallerInterfaces();
+        BindDefaultViewModel();
+
+    }
+
+    private void BindDefaultViewModel()
+    {
+        Container
+            .Bind<ViewModel>()
+            .FromInstance(_defaultViewModel)
+            .AsSingle()
+            .NonLazy();
+    }
+
+    private void BindInstallerInterfaces()
+    {
+        Container
+            .BindInterfacesTo<MainSceneInstaller>()
+            .FromInstance(this)
+            .AsSingle()
+            .NonLazy();
     }
 
     private void BindBonusPool()
@@ -123,6 +146,14 @@ public class MainSceneInstaller : MonoInstaller, IInitializable
     }
     public void Initialize()
     {
+        IFactory enemyFactory = Container.Resolve<IFactory>();
+        enemyFactory.Load();
+        _enemyPool.Initialize(enemyFactory);
+        _bonusPool.Initialize();
 
+        _defaultViewModel.Initialize(_saveAndLoadProcess.AllGunsModel, _moneyShower);
+        _view.Initialize(_defaultViewModel);
+        _moneyShower.AllMoney = 10000;
+        Debug.Log(_moneyShower.AllMoney);
     }
 }

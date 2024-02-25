@@ -6,7 +6,7 @@ public class MoneyBonus : InteractibleObjects
     [SerializeField] private int _moneyCount;
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == GameConstans.PlayerTag)
+        if (other.tag == GameConstans.PLAYER_TAG)
         {
             other.transform.TryGetComponent(out MainPlayerController controller);
             if (controller != null)

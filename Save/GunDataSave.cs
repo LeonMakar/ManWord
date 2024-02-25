@@ -25,11 +25,11 @@ public class GunDataSave
     public GunDataSave Init(GunData gunData)
     {
         GunName = gunData.GunName;
-        Damage = gunData.Damage;
-        RateOfFire = gunData.RateOfFire;
-        GunSpred = gunData.GunSpred;
-        BulletAmmount = gunData.BulletAmmount;
-        ReloadingTime = gunData.ReloadingTime;
+        Damage = gunData.Damage.Value;
+        RateOfFire = gunData.RateOfFire.Value;
+        GunSpred = gunData.GunSpred.Value;
+        BulletAmmount = gunData.BulletAmmount.Value;
+        ReloadingTime = gunData.ReloadingTime.Value;
 
         DamageUpgradeCost= gunData.DamageUpgradeCost;
         RateOfFireUpgradeCost= gunData.RateOfFireUpgradeCost;

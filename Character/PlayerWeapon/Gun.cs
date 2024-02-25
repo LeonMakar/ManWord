@@ -67,11 +67,11 @@ public class Gun : MonoBehaviour
 
     private void SynchronizeWeaponeData()
     {
-        RateOfFire = GunData.RateOfFire;
-        GunDamage = GunData.Damage;
-        MaxBulletAmmount = GunData.BulletAmmount;
+        RateOfFire = GunData.RateOfFire.Value;
+        GunDamage = GunData.Damage.Value;
+        MaxBulletAmmount = GunData.BulletAmmount.Value;
         BulletAmmount = MaxBulletAmmount;
-        ReloadingTime = GunData.ReloadingTime;
+        ReloadingTime = GunData.ReloadingTime.Value;
 
         CreateWeaponPrefab();
     }

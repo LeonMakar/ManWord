@@ -186,7 +186,7 @@ public abstract class Zombie : MonoBehaviour
 
         _moneyShower.ChangeMoneyValue(HoldedMoney);
         _isCrowling = false;
-        GameConstans.DiffcultyValue++;
+        GameConstans.DIFFICRULTY_VALUE++;
     }
     public void StoppingZoomingBulletTrail()
     {

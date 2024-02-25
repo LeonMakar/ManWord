@@ -9,7 +9,7 @@ public class SimpleObstacle : InteractibleObjects
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == GameConstans.PlayerTag)
+        if (other.tag == GameConstans.PLAYER_TAG)
         {
             other.TryGetComponent(out MainPlayerController controller);
             if (controller != null)

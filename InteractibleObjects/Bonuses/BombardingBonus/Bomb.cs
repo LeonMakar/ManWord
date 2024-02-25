@@ -11,7 +11,7 @@ public class Bomb : MonoBehaviour
 
     private void Awake()
     {
-        GameConstans.Bombarding += Bombing;
+        GameConstans.ON_BOMBARDING += Bombing;
     }
 
     private void Bombing()
@@ -28,7 +28,7 @@ public class Bomb : MonoBehaviour
         StartCoroutine(WaitToDeleteParticle(particle.gameObject));
         foreach (var enemy in enemyColliders)
         {
-            if (enemy.tag == GameConstans.EnemyTag)
+            if (enemy.tag == GameConstans.ENEMY_TAG)
             {
                 enemy.TryGetComponent(out Zombie zombie);
                 zombie?.DiactivatingRagdoll(false);

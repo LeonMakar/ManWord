@@ -41,7 +41,7 @@ public class GameIsActiveState : BaseState<GameStateMachine.GameStates>
     }
     public override void EnterToState()
     {
-        GameConstans.DiffcultyValue = 0;
+        GameConstans.DIFFICRULTY_VALUE = 0;
         _difficultyMachine.SetStartDifficulty();
         _gamePlayCanvas.enabled = true;
         _uiMoney.ResetGoldAndMoneyINRestart();

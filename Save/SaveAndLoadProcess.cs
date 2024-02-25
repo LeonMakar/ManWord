@@ -10,6 +10,7 @@ public class SaveAndLoadProcess : MonoBehaviour
     [SerializeField] private List<GunData> _allDefaultGuns;
     private Dictionary<string, GunData> _allGunDataDictionary = new Dictionary<string, GunData>();
 
+    public List<GunData> AllGunsModel => _allDefaultGuns;
 
     [Inject]
     private void Construct(UIMoneyShower money, WeaponSaveData weaponSaveData)
@@ -25,7 +26,11 @@ public class SaveAndLoadProcess : MonoBehaviour
     private void AllGunDataDictionaryInitialization()
     {
         foreach (var gun in _allDefaultGuns)
+        {
             _allGunDataDictionary.Add(gun.GunName, gun);
+            gun.LoadDefaultParameters();
+        }
+
     }
 
     private void Initialize()
@@ -49,6 +54,7 @@ public class SaveAndLoadProcess : MonoBehaviour
         if (!YandexGame.savesData.IsFirstSwitchingOn)
             LoadGunShopAssortment();
 
+
         _money.Loading();
         _weaponSaveData.Loading();
         YandexGame.GameReadyAPI();
@@ -61,12 +67,12 @@ public class SaveAndLoadProcess : MonoBehaviour
         {
             _weaponSaveData.NonByedWeapon = new List<GunData>();
             foreach (var gun in YandexGame.savesData.NonByedGuns)
-                _weaponSaveData.NonByedWeapon.Add(_allGunDataDictionary[gun.GunName].Init(gun));
+                _weaponSaveData.NonByedWeapon.Add(_allGunDataDictionary[gun.GunName].LoadSavedParameters(gun));
         }
         {
             _weaponSaveData.ByedWeapon = new List<GunData>();
             foreach (var gun in YandexGame.savesData.ByedGuns)
-                _weaponSaveData.ByedWeapon.Add(_allGunDataDictionary[gun.GunName].Init(gun));
+                _weaponSaveData.ByedWeapon.Add(_allGunDataDictionary[gun.GunName].LoadSavedParameters(gun));
         }
     }
 

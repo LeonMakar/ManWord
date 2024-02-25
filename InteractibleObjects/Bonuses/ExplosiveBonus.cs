@@ -31,7 +31,7 @@ public class ExplosiveBonus : InteractibleObjects, IShootable
         var enemys = Physics.OverlapSphere(transform.position, _radiusOfExpolosian);
         foreach (var collider in enemys)
         {
-            if (collider.tag == GameConstans.EnemyTag)
+            if (collider.tag == GameConstans.ENEMY_TAG)
             {
                 collider.TryGetComponent(out Zombie zombie);
                 zombie?.DiactivatingRagdoll(false);

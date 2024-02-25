@@ -4,12 +4,22 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "GunData", menuName = "Gun/GunData"), Serializable]
 public class GunData : ScriptableObject
 {
+
+    [SerializeField] private int _damageDefault;
+    [SerializeField] private float _rateOfFireDefault;
+    [SerializeField] private float _gunSpredDefault;
+    [SerializeField] private int _bulletAmmountDefault;
+    [SerializeField] private float _reloadingTimeDefault;
+
+    public readonly ReactiveProperty<int> Damage = new();
+    public readonly ReactiveProperty<float> RateOfFire = new();
+    public readonly ReactiveProperty<float> GunSpred = new();
+    public readonly ReactiveProperty<int> BulletAmmount = new();
+    public readonly ReactiveProperty<float> ReloadingTime = new();
+
+
     [field: SerializeField] public string GunName { get; private set; }
-    public int Damage;
-    public float RateOfFire;
-    public float GunSpred;
-    public int BulletAmmount;
-    public float ReloadingTime;
+
     public PurchaseType PurchaseType;
     [field: SerializeField] public int GunCoast { get; private set; }
     [field: SerializeField] public AudioClip ShootSound { get; private set; }
@@ -18,12 +28,11 @@ public class GunData : ScriptableObject
     [field: SerializeField] public Animator Animator { get; private set; }
 
     [Space(10), Header("Upgrade values")]
-    [SerializeField] private int _damageUpgradeValue;
-    [SerializeField] private float _rateOfFireUpgradeValue;
-    [SerializeField] private float _spredUpgradeValue;
-    [SerializeField] private int _bulletAmmountUpgradeValue;
-    [SerializeField] private float _reloadingTImeUpgradeValue;
-
+    public int DamageUpgradeValue;
+    public float RateOfFireUpgradeValue;
+    public float SpredUpgradeValue;
+    public int BulletAmmountUpgradeValue;
+    public float ReloadingTImeUpgradeValue;
 
     [Space(10), Header("Upgrade cost")]
     public int DamageUpgradeCost;
@@ -41,19 +50,22 @@ public class GunData : ScriptableObject
 
     [field: SerializeField, Space(10)] public float CostMultiplyIndex { get; private set; }
 
-    public void UpgradeDamage() => Damage += _damageUpgradeValue;
-    public void UpgradeRateOfFire() => RateOfFire -= _rateOfFireUpgradeValue;
-    public void UpgradeGunSpred() => GunSpred -= _spredUpgradeValue;
-    public void UpgradeBulletAmmount() => BulletAmmount += _bulletAmmountUpgradeValue;
-    public void UpgradeReloadingTime() => ReloadingTime -= _reloadingTImeUpgradeValue;
-
-    public GunData Init(GunDataSave save)
+    public void LoadDefaultParameters()
     {
-        Damage = save.Damage;
-        RateOfFire = save.RateOfFire;
-        GunSpred = save.GunSpred;
-        BulletAmmount = save.BulletAmmount;
-        ReloadingTime = save.ReloadingTime;
+        Damage.Value = _damageDefault;
+        RateOfFire.Value = _rateOfFireDefault;
+        GunSpred.Value = _gunSpredDefault;
+        BulletAmmount.Value = _bulletAmmountDefault;
+        ReloadingTime.Value = _reloadingTimeDefault;
+
+    }
+    public GunData LoadSavedParameters(GunDataSave save)
+    {
+        Damage.Value = save.Damage;
+        RateOfFire.Value = save.RateOfFire;
+        GunSpred.Value = save.GunSpred;
+        BulletAmmount.Value = save.BulletAmmount;
+        ReloadingTime.Value = save.ReloadingTime;
 
         DamageUpgradeCost = save.DamageUpgradeCost;
         RateOfFireUpgradeCost = save.RateOfFireUpgradeCost;
@@ -69,7 +81,6 @@ public class GunData : ScriptableObject
 
         return this;
     }
-
 }
 
 public enum PurchaseType

@@ -23,7 +23,7 @@ public class ShootingState : BaseState<GunStateMachine.GunStates>
     public override void EnterToState()
     {
         _isOnShootingState = true;
-        _gun.StartCoroutine(Shooting(_gun.GunData.RateOfFire));
+        _gun.StartCoroutine(Shooting(_gun.GunData.RateOfFire.Value));
         _gun.AudioSource.clip = _gun.GunData.ShootSound;
     }
 
@@ -101,8 +101,8 @@ public class ShootingState : BaseState<GunStateMachine.GunStates>
     private void CalculateSprededPoint(Vector3 point)
     {
         _sprededAndPoint = point;
-        _sprededAndPoint.x = UnityEngine.Random.Range(_sprededAndPoint.x - _gun.GunData.GunSpred, _sprededAndPoint.x + _gun.GunData.GunSpred);
-        _sprededAndPoint.y = UnityEngine.Random.Range(_sprededAndPoint.y - _gun.GunData.GunSpred, _sprededAndPoint.y + _gun.GunData.GunSpred);
+        _sprededAndPoint.x = UnityEngine.Random.Range(_sprededAndPoint.x - _gun.GunData.GunSpred.Value, _sprededAndPoint.x + _gun.GunData.GunSpred.Value);
+        _sprededAndPoint.y = UnityEngine.Random.Range(_sprededAndPoint.y - _gun.GunData.GunSpred.Value, _sprededAndPoint.y + _gun.GunData.GunSpred.Value);
     }
     private void PlayShootAudio()
     {

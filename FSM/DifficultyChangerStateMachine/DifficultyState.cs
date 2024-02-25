@@ -40,7 +40,7 @@ public class DifficultyState : BaseState<DifficultyChangerStateMachine.Dificulty
 
     public override void UpdateState()
     {
-        if (GameConstans.DiffcultyValue >= _transititonValue)
+        if (GameConstans.DIFFICRULTY_VALUE >= _transititonValue)
             ChangeStateAction.Invoke(_stateToTransit);
     }
 }

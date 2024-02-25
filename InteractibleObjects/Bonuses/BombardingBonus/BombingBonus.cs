@@ -9,9 +9,9 @@ public class BombingBonus : InteractibleObjects
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == GameConstans.PlayerTag)
+        if (other.tag == GameConstans.PLAYER_TAG)
         {
-            GameConstans.Bombarding.Invoke();
+            GameConstans.ON_BOMBARDING.Invoke();
             gameObject.SetActive(false);
         }
     }

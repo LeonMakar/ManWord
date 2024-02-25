@@ -13,7 +13,7 @@ public class GameOverTrigger : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == GameConstans.EnemyTag)
+        if (other.gameObject.tag == GameConstans.ENEMY_TAG)
         {
             _gameStateMachine.TransitToGameOverState();
         }

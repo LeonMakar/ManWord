@@ -47,7 +47,7 @@ public class GameStateMachine : StateManager<GameStateMachine.GameStates>
     }
     private void Start()
     {
-        GameConstans.IsMobile = YandexGame.EnvironmentData.isMobile;
+        GameConstans.IS_MOBILE = YandexGame.EnvironmentData.isMobile;
     }
 
     public void TransitToGameActiveState() => TransitionToNextState(GameStates.GameIsActive);

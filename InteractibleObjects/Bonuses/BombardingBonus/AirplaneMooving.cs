@@ -15,7 +15,7 @@ public class AirplaneMooving : MonoBehaviour
 
     private void Awake()
     {
-        GameConstans.Bombarding += StartMooving;
+        GameConstans.ON_BOMBARDING += StartMooving;
     }
 
     private void StartMooving()

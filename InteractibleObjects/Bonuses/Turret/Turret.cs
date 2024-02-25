@@ -20,12 +20,12 @@ public class Turret : MonoBehaviour
     private void Start()
     {
         _gunTrailPool = new TrailPool(30, _trailPrefab);
-        GameConstans.ActivateTurret += TurretActivations;
+        GameConstans.ON_ACCTIVATE_TURRET += TurretActivations;
     }
     private void OnTriggerStay(Collider other)
     {
 
-        if (other.tag == GameConstans.EnemyTag && _target == null)
+        if (other.tag == GameConstans.ENEMY_TAG && _target == null)
         {
             other.transform.TryGetComponent(out Zombie target);
             if (!target.IsStartDying)

@@ -50,7 +50,7 @@ public class MainPlayerController : MonoBehaviour
     }
     private void OnEnable()
     {
-        if (GameConstans.IsMobile)
+        if (GameConstans.IS_MOBILE)
         {
             _mobileCanvas.enabled = true;
         }
@@ -108,18 +108,18 @@ public class MainPlayerController : MonoBehaviour
     private IEnumerator StartAimingTimer(float aimingTime)
     {
 
-        saveSpred = _gun.GunData.GunSpred;
-        _gun.GunData.GunSpred = 0;
+        saveSpred = _gun.GunData.GunSpred.Value;
+        _gun.GunData.GunSpred.Value = 0;
         yield return new WaitForSeconds(aimingTime);
         AimCamera.Priority = 9;
         Time.timeScale = 1;
-        _gun.GunData.GunSpred = saveSpred;
+        _gun.GunData.GunSpred.Value = saveSpred;
         StartCoroutine(CooldawnAiming());
 
     }
     public void ResetSpredAndAim()
     {
-        _gun.GunData.GunSpred = saveSpred;
+        _gun.GunData.GunSpred.Value = saveSpred;
         if (Time.timeScale < 1)
         {
             AimCamera.Priority = 9;
@@ -129,7 +129,7 @@ public class MainPlayerController : MonoBehaviour
     }
     private void Rotation()
     {
-        if (GameConstans.IsMobile)
+        if (GameConstans.IS_MOBILE)
             Sensetive = 2.5f;
         Vector2 input = _inputActions.Default.Rotate.ReadValue<Vector2>() * Time.deltaTime * Sensetive;
         if (input.x + _turgetTransform.position.x > 15)
